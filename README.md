@@ -1,5 +1,7 @@
 # 365GroupProject
-CSC 365 Relational Database Group Project
+ecotrek-equipment-co.
 Group members: Ryan Agdassi, Isaac Schiffler, Justin Yuen, Kamran Bastani
 
-Project idea: E-commerce site for renting outdoor equipment from a store.
+This dynamic online platform revolutionizes the rental and purchase of outdoor equipment, catering specifically to outdoor enthusiasts. The website features an extensive selection of high-quality equipment available from a physical location with images, usage specifications, brand, size, and a thorough condition report. This level of detail ensures users are well-informed about their choices. Adding to the convenience is a real-time availability and reservation system, allowing users to plan and book equipment for future adventures. The platform also displays clear pricing, varying with the type and condition of equipment, aiding in transparent and economical decision-making.
+
+In line with sustainable practices, the platform doubles as a two-way marketplace, enabling users to sell their used outdoor gear, thus promoting the reuse and recycling of equipment. Every item undergoes strict quality and safety inspections, ensuring only the best for rental or resale. User engagement is enhanced through a review and rating system, fostering a trustworthy community. Complementing these features is dedicated customer support, available to assist with any inquiries, ensuring a seamless and efficient user experience from start to finish. This platform is more than just a rental service; it's a comprehensive, sustainable solution for outdoor enthusiasts seeking quality, convenience, and eco-conscious choices.
