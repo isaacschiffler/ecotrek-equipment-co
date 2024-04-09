@@ -1,5 +1,4 @@
-# 365GroupProject
-ecotrek-equipment-co.
+# ecotrek-equipment-co.
 Group members: Ryan Agdassi, Isaac Schiffler, Justin Yuen, Kamran Bastani
 
 This dynamic online platform revolutionizes the rental and purchase of outdoor equipment, catering specifically to outdoor enthusiasts. The website features an extensive selection of high-quality equipment available from a physical location with images, usage specifications, brand, size, and a thorough condition report. This level of detail ensures users are well-informed about their choices. Adding to the convenience is a real-time availability and reservation system, allowing users to plan and book equipment for future adventures. The platform also displays clear pricing, varying with the type and condition of equipment, aiding in transparent and economical decision-making.
