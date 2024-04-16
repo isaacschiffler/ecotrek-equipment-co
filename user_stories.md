@@ -13,6 +13,9 @@
 10. As a climber, I want to be able to my equipment to be regularly checked to ensure my safety on the rocks.
 11. As a student who doesn't have much storage space, I want to be able to rent equipment only for the time that I use it and for an affordable price.
 12. As someone who travels a lot, I don't want to have to bring all of the equipment I need across the country, especially when I am flying.
+13. As a cold-weather camper, I want to find and rent specially insulated gear that is suitable for extreme cold, so I can camp safely in winter conditions.
+14. As a novice camper, I want to see items categorized by type, so I can make informed decisions based on comparing similar equipment.
+15. As an event organizer, I want to be able to rent multiple items in large quantities to accommodate large groups during corporate outdoor events.
 
 
 ## Exceptions
@@ -28,3 +31,6 @@
 10. If a customer tries to rent an item for longer than max allowed time, the cart will notify them and only enter the max amount of time.
 11. If a customer wants to buy or rent more of an item than is in stock, the cart will notify them and enter the current stock.
 12. If a customer tries to rent an item that has been damaged, the cart will not allow this and either notify them when it will be fixed or that it is being removed from the stock.
+13. If a customer's rental period ends but they have not returned the item, the system will automatically charge a late fee and send a notification for return.
+14. If a customer tries to rent an item but inputs a rental return date that is before the start date, the cart will display an error message and prompt them to enter a correct return date.
+15. If a customer's contact information is incomplete or formatted incorrectly during checkout (ie. missing phone numbers, invalid email addresses), the cart will prompt them to input the information before the order can be finalized.
