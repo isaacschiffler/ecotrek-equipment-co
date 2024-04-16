@@ -16,9 +16,9 @@
 
 
 ## Exceptions
-1. 1
-2. 1
-3. 1
+1. If a customer's card is declined, the cart will give an error and ask to retry a different card.
+2. If a customer has an item in their cart that goes out of stock, the cart will notify them and remove it from their cart.
+3. If a customer intended rent dates overlap with a previous reservation, the cart will notify them and suggest the next closest rent dates.
 4. 2
 5. 3
 6. 3
