@@ -8,8 +8,8 @@
 5. 
 6. 
 7. As a full-time mountaineer, I want to be able to trade in worn-down equipment for better, newer ones for a lower price than simply buying the new equipment alone.
-8. As the parent of four young children, I want to be able to return out-grown equipment or have basic renting options available.
-9. As someoene who prefers hotels and does not like the outdoors, I want to be able to purchase higher-end tents and am willing to spend more for this. 
+8. As the parent of four young children, I want to be able to return out-grown equipment and have basic renting options available.
+9. As someone who prefers hotels and does not like the outdoors, I want to be able to purchase higher-end tents and am willing to spend more for this luxury. 
 10. 10
 11. 22
 12. 12
@@ -22,9 +22,9 @@
 4. 2
 5. 3
 6. 3
-7. 3
-8. 3
-9. 3
+7. If a customer wants to return an item that's overdue, the cart will throw an error and not accept back the item.
+8. If a customer wants to purchase something that is **not** for sale (ie, on hold), the cart will notify them accordingly and remove from cart.
+9. If a customer tries to add an item that exceeds the max size possible of a cart, the cart will notify them and will not add that item.
 10. 3
 11. 3
 12. 3
