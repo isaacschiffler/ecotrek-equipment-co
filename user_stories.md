@@ -7,7 +7,7 @@
 4. As someone looking for a used sleeping bag, I want to be able to see the condition of items I'm looking at so I buy something that isn't too overused.
 5. 
 6. 
-7. As a full-time mountaineer, I want to be able to trade in worn-down equipment for better, newer ones for a lower price than simply buying the new equipment alone.
+7. As a full-time mountaineer, I want to be able to trade in worn-down equipment for better, newer ones, for a lower price than simply buying brand new equipment.
 8. As the parent of four young children, I want to be able to return out-grown equipment and have basic renting options available.
 9. As someone who prefers hotels and does not like the outdoors, I want to be able to purchase higher-end tents and am willing to spend more for this luxury. 
 10. 10
