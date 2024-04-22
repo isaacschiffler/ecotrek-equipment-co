@@ -10,8 +10,8 @@
 
 ## 5. Purchase New Stock
 
-## 6. 
+## 6. Customer Rating
 
-## 7.
+## 7. Customer Return
 
-## 8. 
+## 8. Customer Trade-in
