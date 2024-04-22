@@ -18,25 +18,22 @@
 
 #1: Customer Purchasing/Renting
 ```json
-[
-  {
-    "accountID": "int",
-    "orderID": "int",
-    "productID": "int",
-    "dateStart": "string",
-    "dateEnd": "string
-  }
-]
+{
+  "accountID": "int",
+  "orderID": "int",
+  "productID": "int",
+  "dateStart": "string",
+  "dateEnd": "string"
+}
 ```
+
 #2: User Listing Itme for Sale/Rent
 ```json
-[
-  {
-    "productID": "int",
-    "quantity": "int",
-    "orderValue": "float",
-    "condition: "string",
-    "color: "string"
-  }
-]
+{
+  "productID": "int",
+  "quantity": "int",
+  "orderValue": "float",
+  "condition: "string",
+  "color: "string"
+}
 ```
