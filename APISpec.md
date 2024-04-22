@@ -16,6 +16,16 @@
 ]
 ```
 
+### 1.2: Create Cart - `/cart/` (POST)
+```json
+{
+  "customerID": "int",
+  "created_at": "timestamp",
+}
+```
+
+### 1.3:
+
 ## 2. User Listing Item for Sale
 ### 2.1: CHANGE THIS TO MATCH PROF FORMATTING
 ```json
