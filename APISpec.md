@@ -11,7 +11,7 @@
     "price": "int",
     "stock": "int",
     "description": "string",
-    "quality": "string"
+    "condition": "string"
   }
 ]
 ```
@@ -48,14 +48,22 @@
 ``` 
 
 ## 2. User Listing Item for Sale
-### 2.1: CHANGE THIS TO MATCH PROF FORMATTING
+### 2.1: Post item - `/marketplace/` (POST)
+**Request**:
 ```json
 {
-  "productID": "int",
+  "productName": "int",
   "quantity": "int",
-  "orderValue": "float",
+  "price": "int",
   "condition": "string",
-  "color": "string"
+  "description": "string
+}
+```
+
+**Response**:
+```json
+{
+  "listingID": "int"
 }
 ```
 
