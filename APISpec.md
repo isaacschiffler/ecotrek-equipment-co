@@ -6,7 +6,7 @@ The API calls are made in this sequence when making a purchase:
 2. `New Cart`
 3. `Add Item to Cart` (Can be called multiple times)
 4. `Checkout Cart`
-5. `Search Orders`
+
 ### 1.1: Get Catalog - `/catalog/` (GET)
 **Response**:
 ```json
