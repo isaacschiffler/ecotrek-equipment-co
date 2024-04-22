@@ -144,14 +144,17 @@ The API calls are made in this sequence when making a purchase:
   "productName": "int",
   "quantity": "int",
   "condition": "string",
+  "return_date": "datetime"
 }
 ```
 
 **Response**:
 ```json
 {
-  "money_received": "int"
   "return_id": "int"
+  "return_status": "boolean"
+  "return_amount": "int"
+  
 }
 ```
 
