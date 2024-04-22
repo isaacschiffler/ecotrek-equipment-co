@@ -138,5 +138,22 @@ The API calls are made in this sequence when making a purchase:
 ## 6. Customer Rating
 
 ## 7. Customer Return
+**Request**:
+```json
+{
+  "productName": "int",
+  "quantity": "int",
+  "condition": "string",
+}
+```
+
+**Response**:
+```json
+{
+  "money_received": "int"
+  "return_id": "int"
+}
+```
+
 
 ## 8. Customer Trade-in
