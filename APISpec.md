@@ -1,8 +1,31 @@
 # API Specification for Outdoor Equipment Shop and Exchange
 
-## 1. Customer Purchasing/Renting
+## 1. Customer Purchasing
+### 1.1: Get Catalog - `/catalog/` (GET)
+**Response**:
+```json
+[
+  {
+    "productID": "int",
+    "product_name": "string",
+    "price": "int",
+    "stock": "int",
+    "description": "string",
+    "quality": "string"
+  }
+```
 
-## 2. User Listing Item for Sale/Rent
+## 2. User Listing Item for Sale
+### 2.1: CHANGE THIS TO MATCH PROF FORMATTING
+```json
+{
+  "productID": "int",
+  "quantity": "int",
+  "orderValue": "float",
+  "condition": "string",
+  "color": "string"
+}
+```
 
 ## 3. User Registration
 
@@ -15,25 +38,3 @@
 ## 7. Customer Return
 
 ## 8. Customer Trade-in
-
-### 8.1: Customer Purchasing/Renting
-```json
-{
-  "accountID": "int",
-  "orderID": "int",
-  "productID": "int",
-  "dateStart": "string",
-  "dateEnd": "string"
-}
-```
-
-### 8.2: User Listing Itme for Sale/Rent
-```json
-{
-  "productID": "int",
-  "quantity": "int",
-  "orderValue": "float",
-  "condition": "string",
-  "color": "string"
-}
-```
