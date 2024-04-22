@@ -77,7 +77,7 @@ The API calls are made in this sequence when making a purchase:
   "quantity": "int",
   "price": "int",
   "condition": "string",
-  "description": "string
+  "description": "string"
 }
 ```
 
@@ -87,6 +87,24 @@ The API calls are made in this sequence when making a purchase:
   "listingID": "int"
 }
 ```
+
+### 2.2: Sell item - `/marketplace/{listingID}` (POST)
+**Request**:
+```json
+{
+  "quantity": "int"
+}
+```
+
+**Response**:
+```json
+{
+  "item_sold": "string",
+  "quantity": "int",
+  "money_paid": "int"
+}
+```
+
 
 ## 3. User Registration
 ### 3.1: Register - `/cart/{cartID}` (POST)
