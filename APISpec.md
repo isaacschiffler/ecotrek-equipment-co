@@ -33,7 +33,7 @@
   "productID": "int",
   "quantity": "int",
   "orderValue": "float",
-  "condition: "string",
-  "color: "string"
+  "condition": "string",
+  "color": "string"
 }
 ```
