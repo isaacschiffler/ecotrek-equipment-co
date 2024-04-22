@@ -15,3 +15,21 @@
 ## 7. Customer Return
 
 ## 8. Customer Trade-in
+
+#1: Customer Purchasing/Renting
+{
+  "accountID": "int",
+  "orderID": "int",
+  "productID": "int",
+  "dateStart": "string",
+  "dateEnd": "string
+}
+
+#2: User Listing Itme for Sale/Rent
+{
+  "productID": "int",
+  "quantity": "int",
+  "orderValue": "float",
+  "condition: "string",
+  "color: "string"
+}
