@@ -13,6 +13,7 @@
     "description": "string",
     "quality": "string"
   }
+]
 ```
 
 ## 2. User Listing Item for Sale
