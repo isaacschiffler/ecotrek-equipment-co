@@ -78,8 +78,8 @@
 ```json
 [
   {
-    "activity": "string",
-    "item_type": "string",
+    "productID": "int",
+    "product_name": "string",
     "quantity_in_stock": "string",
     "quantity_on_loan": "string"
   }
