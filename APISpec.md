@@ -107,7 +107,7 @@ The API calls are made in this sequence when making a purchase:
 
 
 ## 3. User Registration
-### 3.1: Register - `/cart/{cartID}` (POST)
+### 3.1: Register - `/cart/{cartID}` (POST) ``` this needs to be changed ```
 **Request**:
 ```json
 {
