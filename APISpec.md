@@ -107,18 +107,24 @@ The API calls are made in this sequence when making a purchase:
 
 
 ## 3. User Registration
-### 3.1: Register - `/cart/{cartID}` (POST) ``` this needs to be changed ```
+### 3.1: Register - `/user/{userID}` (POST) ``` this needs to be changed ```
 **Request**:
 ```json
 {
   "name": "string",
   "email": "string",
+  "phone_number": "string",
   "password": "string",
-  "location": "string",
   "preferred_activities": ["string"]
 }
 ```
-
+**Response**:
+```json
+{
+  "userID": "int",
+  "success": "boolean"
+}
+```
 
 ## 4. Purchase New Stock
 
