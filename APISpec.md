@@ -60,8 +60,31 @@
 ```
 
 ## 3. User Registration
+### 3.1: Register - `/cart/{cartID}` (POST)
+**Request**:
+```json
+{
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "location": "string",
+  "preferred_activities": ["string"]
+}
+```
 
 ## 4. Audit Functions
+### 3.1: Stock - `/cart/{cartID}` (POST)
+**Response**:
+```json
+[
+  {
+    "activity": "string",
+    "item_type": "string",
+    "quantity_in_stock": "string",
+    "quantity_on_loan": "string"
+  }
+]
+```
 
 ## 5. Purchase New Stock
 
