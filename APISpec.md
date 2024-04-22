@@ -119,44 +119,6 @@ The API calls are made in this sequence when making a purchase:
 }
 ```
 
-## 4. Audit Functions
-### 3.1: Stock - `/cart/{cartID}` (POST)
-**Response**:
-```json
-[
-  {
-    "productID": "int",
-    "product_name": "string",
-    "quantity_in_stock": "string",
-    "quantity_on_loan": "string"
-  }
-]
-```
 
-## 5. Purchase New Stock
+## 4. Purchase New Stock
 
-## 6. Customer Rating
-
-## 7. Customer Return
-**Request**:
-```json
-{
-  "productName": "int",
-  "quantity": "int",
-  "condition": "string",
-  "return_date": "datetime"
-}
-```
-
-**Response**:
-```json
-{
-  "return_id": "int"
-  "return_status": "boolean"
-  "return_amount": "int"
-  
-}
-```
-
-
-## 8. Customer Trade-in
