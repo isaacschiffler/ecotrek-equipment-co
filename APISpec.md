@@ -17,14 +17,35 @@
 ```
 
 ### 1.2: Create Cart - `/cart/` (POST)
+**Request**:
 ```json
 {
-  "customerID": "int",
-  "created_at": "timestamp",
+  "customerID": "int"
 }
 ```
 
-### 1.3:
+**Response**:
+```json
+{
+  "cartID": "int"
+}
+```
+
+### 1.3: Cart Checkout - `/cart/{cartID}` (POST)
+**Request**:
+```json
+{
+  "payment": "string"
+}
+```
+
+**Response**:
+```json
+{
+  "num_items_bought": "int",
+  "money_paid": "int"
+}
+``` 
 
 ## 2. User Listing Item for Sale
 ### 2.1: CHANGE THIS TO MATCH PROF FORMATTING
