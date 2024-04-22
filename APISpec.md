@@ -16,7 +16,7 @@
 
 ## 8. Customer Trade-in
 
-#1: Customer Purchasing/Renting
+### 8.1: Customer Purchasing/Renting
 ```json
 {
   "accountID": "int",
@@ -27,7 +27,7 @@
 }
 ```
 
-#2: User Listing Itme for Sale/Rent
+### 8.2: User Listing Itme for Sale/Rent
 ```json
 {
   "productID": "int",
