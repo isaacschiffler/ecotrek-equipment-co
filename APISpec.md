@@ -1,6 +1,12 @@
 # API Specification for Outdoor Equipment Shop and Exchange
 
 ## 1. Customer Purchasing
+The API calls are made in this sequence when making a purchase:
+1. `Get Catalog`
+2. `New Cart`
+3. `Add Item to Cart` (Can be called multiple times)
+4. `Checkout Cart`
+5. `Search Orders`
 ### 1.1: Get Catalog - `/catalog/` (GET)
 **Response**:
 ```json
@@ -31,7 +37,22 @@
 }
 ```
 
-### 1.3: Cart Checkout - `/cart/{cartID}` (POST)
+### 1.3: Add item to cart - `/cart/{cartID}/product/{productID}`
+**Request**:
+```json
+{
+  "quantity": "int"
+}
+```
+
+**Response**:
+```json
+{
+  "success": boolean"
+}
+```
+
+### 1.4: Cart Checkout - `/cart/{cartID}` (POST)
 **Request**:
 ```json
 {
