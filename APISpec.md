@@ -133,7 +133,7 @@ Buying items from wholesaler.
 **Request**:
 ```json
 {
-  "productName": "int",
+  "productName": "string",
   "product_type": "string",
   "quantity": "int",
   "price": "int",
