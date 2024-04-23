@@ -10,5 +10,9 @@ To do so she does the following:
 Alice receives her backpack two days later at her door just in time for her trip.
 
 ## 2. (User listing an item for sale?)
+John is an avid garage-sale buyer, and in his excursions has come up on extra tents that he no longer needs. He wants to sell one of his tents to give it to someone that would use it more than himself. First, John posts the item with the corresponding criteria for the listing by calling POST /marketplace/. The data passed to POST includes relevant information about the product, including the product name, description, condition, and price. 
+* Call POST /marketplace/ to get a new listing with an ID of 276
+* Then, John calls POST /marketplace/276 and passes a quantity of 1. Now the listing is posted with the corresponding details.
 
+John's listing for his Blue Tent is listed on the website as "for sale" for people to see.
 ## 3. (Purchasing new stock to list for sale?)
