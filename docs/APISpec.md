@@ -107,7 +107,7 @@ The API calls are made in this sequence when making a purchase:
 
 
 ## 3. User Registration
-### 3.1: Register - `/user/{userID}` (POST) ``` this needs to be changed ```
+### 3.1: Register - `/user/{userID}` (POST)
 **Request**:
 ```json
 {
@@ -127,4 +127,24 @@ The API calls are made in this sequence when making a purchase:
 ```
 
 ## 4. Purchase New Stock
+### 4.1. Get Stock Purchase Plan - `/stock/` (POST)
+Buying items from wholesaler.
 
+**Request**:
+```json
+{
+  "productName": "string",
+  "product_type": "string",
+  "quantity": "int",
+  "price": "int",
+  
+}
+```
+**Response**:
+```json
+{
+  "stockID": "int",
+  "items": ["string"]
+  "quantity": "int"
+}
+```
