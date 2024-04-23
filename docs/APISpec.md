@@ -52,7 +52,7 @@ The API calls are made in this sequence when making a purchase:
 }
 ```
 
-### 1.4: Cart Checkout - `/cart/{cartID}` (POST)
+### 1.4: Cart Checkout - `/cart/{cartID}/checkout` (POST)
 **Request**:
 ```json
 {
