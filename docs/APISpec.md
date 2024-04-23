@@ -12,10 +12,10 @@ The API calls are made in this sequence when making a purchase:
 ```json
 [
   {
-    "productID": "int",
+    "productID": "integer",
     "product_name": "string",
-    "price": "int",
-    "stock": "int",
+    "price": "integer",
+    "stock": "integer",
     "description": "string",
     "condition": "string"
   }
@@ -26,14 +26,14 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "customerID": "int"
+  "customerID": "integer"
 }
 ```
 
 **Response**:
 ```json
 {
-  "cartID": "int"
+  "cartID": "integer"
 }
 ```
 
@@ -41,7 +41,7 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "quantity": "int"
+  "quantity": "integer"
 }
 ```
 
@@ -63,8 +63,8 @@ The API calls are made in this sequence when making a purchase:
 **Response**:
 ```json
 {
-  "num_items_bought": "int",
-  "money_paid": "int"
+  "num_items_bought": "integer",
+  "money_paid": "integer"
 }
 ``` 
 
@@ -73,9 +73,9 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "productName": "int",
-  "quantity": "int",
-  "price": "int",
+  "productName": "integer",
+  "quantity": "integer",
+  "price": "integer",
   "condition": "string",
   "description": "string"
 }
@@ -84,7 +84,7 @@ The API calls are made in this sequence when making a purchase:
 **Response**:
 ```json
 {
-  "listingID": "int"
+  "listingID": "integer"
 }
 ```
 
@@ -92,7 +92,7 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "quantity": "int"
+  "quantity": "integer"
 }
 ```
 
@@ -100,8 +100,8 @@ The API calls are made in this sequence when making a purchase:
 ```json
 {
   "item_sold": "string",
-  "quantity": "int",
-  "money_paid": "int"
+  "quantity": "integer",
+  "money_paid": "integer"
 }
 ```
 
@@ -123,7 +123,7 @@ Registering a new user into the database.
 **Response**:
 ```json
 {
-  "userID": "int",
+  "userID": "integer",
   "success": "boolean"
 }
 ```
@@ -137,16 +137,16 @@ Buying items from wholesaler.
 {
   "productName": "string",
   "product_type": "string",
-  "quantity": "int",
-  "price": "int",
+  "quantity": "integer",
+  "price": "integer",
   
 }
 ```
 **Response**:
 ```json
 {
-  "stockID": "int",
+  "stockID": "integer",
   "items": ["string"]
-  "quantity": "int"
+  "quantity": "integer"
 }
 ```
