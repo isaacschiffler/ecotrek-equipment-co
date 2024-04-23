@@ -129,6 +129,7 @@ The API calls are made in this sequence when making a purchase:
 ## 4. Purchase New Stock
 ### 4.1. Get Stock Purchase Plan - `/stock/` (POST)
 Buying items from wholesaler.
+
 **Request**:
 ```json
 {
