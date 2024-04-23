@@ -129,24 +129,29 @@ Registering a new user into the database.
 ```
 
 ## 4. Purchase New Stock
-### 4.1. Get Stock Purchase Plan - `/stock/` (POST)
+### 4.1 Get Stock Purchase Plan
+
+
+### 4.2. Deliver Equipment Stock - `/plan/` (GET)
 Buying items from wholesaler.
 
 **Request**:
 ```json
-{
-  "productName": "string",
-  "product_type": "string",
-  "quantity": "integer",
-  "price": "integer",
-  
-}
+[
+  {
+    "sku": "string",
+    "category": "string",
+    "price": "integer",
+    "quantity": "integer"
+  }
+]
 ```
 **Response**:
 ```json
-{
-  "stockID": "integer",
-  "items": ["string"]
-  "quantity": "integer"
-}
+[
+    {
+        "sku": "string", /* Must match a sku from the catalog just passed in this call */
+        "quantity": "integer" /* A number between 1 and the quantity available for sale */
+    }
+]
 ```
