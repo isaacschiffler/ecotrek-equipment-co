@@ -8,3 +8,7 @@ To do so she does the following:
 * Lastly, to checkout, she calls POST /carts/333/checkout to place her order. The checkout charges her $150 and sends her a backpack.
 
 Alice receives her backpack two days later at her door just in time for her trip.
+
+## 2. (User listing an item for sale?)
+
+## 3. (Purchasing new stock to list for sale?)
