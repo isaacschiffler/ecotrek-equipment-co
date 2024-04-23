@@ -108,6 +108,8 @@ The API calls are made in this sequence when making a purchase:
 
 ## 3. User Registration
 ### 3.1: Register - `/user/{userID}` (POST)
+Registering a new user into the database.
+
 **Request**:
 ```json
 {
