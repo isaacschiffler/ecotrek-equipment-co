@@ -129,12 +129,8 @@ Registering a new user into the database.
 ```
 
 ## 4. Purchase New Stock
-### 4.1 Get Stock Purchase Plan
-
-
-### 4.2. Deliver Equipment Stock - `/plan/` (GET)
-Buying items from wholesaler.
-
+### 4.1 Get Stock Purchase Plan - `/plan/` (GET)
+Planning wholesale purchase plan
 **Request**:
 ```json
 [
@@ -155,3 +151,18 @@ Buying items from wholesaler.
     }
 ]
 ```
+
+### 4.2. Deliver Equipment Stock - `/stock/deliver/{orderID}
+Buying items from wholesaler.
+**Request**:
+```json
+[
+  {
+    "sku": "string",
+    "category": "string",
+    "price": "integer",
+    "quantity": "integer"
+  }
+]
+```
+
