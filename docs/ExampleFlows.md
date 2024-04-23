@@ -17,8 +17,6 @@ John is an avid garage-sale buyer, and in his excursions has come up on extra te
 John's listing for his Blue Tent is listed on the website as "for sale" for people to see.
 
 ## 3. Purchasing new stock to list for sale
-At the end of each quarter, North Face sells their extra tents to the marketplace using the /marketplace/ (POST) endpoint. They reduce prices to an affordable amount, and set quantity to 500. The marketplace then can purchase the wholesale of sleeping bags from North Face by calling the /stock/ (POST) endpoint.
-* North Face calls POST /marketplace with product name being "sleeping bag", reduced pricing of $45/each x quantity 500 = $22,500 total, overall condition "excellent", and a relevant description.
-* Marketplace calls /stock/ POST endpoint to purchase the wholesale North Face put up with stockID being 1, as this was their first wholesale purchase order.
-
-Marketplace-goers are now able to buy North Face sleeping bags while staying in their budget.  
+Our shop has recently sold lots of items and needs to restock to make sure we have supply to fulfill demands. Thus we want to purchase more The North Face jackets and tents. 
+* First, we call GET /plan to receive the wholesale catalog that The North Face offers. We will go through this catalog to find jackets and tents that we need to restock.
+* Then, after submitting our plan, the supplier calls POST /stock/deliver/{orderID} in which we may for the order and receive our purchase plan.
