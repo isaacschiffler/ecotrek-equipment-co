@@ -17,8 +17,8 @@ John is an avid garage-sale buyer, and in his excursions has come up on extra te
 John's listing for his Blue Tent is listed on the website as "for sale" for people to see.
 
 ## 3. Purchasing new stock to list for sale
-Anne is an avid backpacker and wants to spread her love for the passtime to those less fortunate than she is. She collects her rotation 'wholesale' of sleeping bags, and posts them onto the marketplace using the /marketplace/ (POST) endpoint. She sets the price to an affordable amount and quantity to 17 (the number of sleeping bags she owns). The marketplace then can purchase the wholesale of sleeping bags from Anne by calling the /stock/ (POST) endpoint.
-* Anne calls POST /marketplace with product name being "sleeping bag", appropriate pricing of $9/each x quantity 17 = $153 total, overall condition "excellent", and description "top notch"
-* Marketplace calls /stock/ POST endpoint to purchase the wholesale Anne put up with stockID being 1, as this was their first ever wholesale purchase order.
+At the end of each quarter, North Face sells their extra tents to the marketplace using the /marketplace/ (POST) endpoint. They reduce prices to an affordable amount, and set quantity to 500. The marketplace then can purchase the wholesale of sleeping bags from North Face by calling the /stock/ (POST) endpoint.
+* North Face calls POST /marketplace with product name being "sleeping bag", reduced pricing of $45/each x quantity 500 = $22,500 total, overall condition "excellent", and a relevant description.
+* Marketplace calls /stock/ POST endpoint to purchase the wholesale North Face put up with stockID being 1, as this was their first wholesale purchase order.
 
-Marketplace-goers are now able to buy Anne's sleeping bags while staying in their budget.  
+Marketplace-goers are now able to buy North Face sleeping bags while staying in their budget.  
