@@ -16,6 +16,8 @@ def reset():
     """
     TEST....
     """
+    with db.engine.begin() as connection:
+        connection.execute(sqlalchemy.text("CREATE TABLE test;"))
 
 
                  
