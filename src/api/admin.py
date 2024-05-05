@@ -11,8 +11,8 @@ router = APIRouter(
     dependencies=[Depends(auth.get_api_key)],
 )
 
-@router.post("/test")
-def test():
+@router.post("/reset")
+def reset():
     """
     TEST....
     """
