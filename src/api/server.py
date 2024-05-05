@@ -11,7 +11,7 @@ from src import database as db
 
 
 description = """
-Central Coast Cauldrons is the premier ecommerce site for all your alchemical desires.
+Eco-Trek Equipment Co. is the premier ecommerce site for all your outdoorsy desires.
 """
 
 app = FastAPI(
