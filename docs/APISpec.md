@@ -12,10 +12,10 @@ The API calls are made in this sequence when making a purchase:
 ```json
 [
   {
-    "productID": "int",
+    "productID": "integer",
     "product_name": "string",
-    "price": "int",
-    "stock": "int",
+    "price": "integer",
+    "stock": "integer",
     "description": "string",
     "condition": "string"
   }
@@ -26,14 +26,14 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "customerID": "int"
+  "customerID": "integer"
 }
 ```
 
 **Response**:
 ```json
 {
-  "cartID": "int"
+  "cartID": "integer"
 }
 ```
 
@@ -41,7 +41,7 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "quantity": "int"
+  "quantity": "integer"
 }
 ```
 
@@ -52,7 +52,7 @@ The API calls are made in this sequence when making a purchase:
 }
 ```
 
-### 1.4: Cart Checkout - `/cart/{cartID}` (POST)
+### 1.4: Cart Checkout - `/cart/{cartID}/checkout` (POST)
 **Request**:
 ```json
 {
@@ -63,8 +63,8 @@ The API calls are made in this sequence when making a purchase:
 **Response**:
 ```json
 {
-  "num_items_bought": "int",
-  "money_paid": "int"
+  "num_items_bought": "integer",
+  "money_paid": "integer"
 }
 ``` 
 
@@ -73,9 +73,9 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "productName": "int",
-  "quantity": "int",
-  "price": "int",
+  "productName": "integer",
+  "quantity": "integer",
+  "price": "integer",
   "condition": "string",
   "description": "string"
 }
@@ -84,7 +84,7 @@ The API calls are made in this sequence when making a purchase:
 **Response**:
 ```json
 {
-  "listingID": "int"
+  "listingID": "integer"
 }
 ```
 
@@ -92,7 +92,7 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "quantity": "int"
+  "quantity": "integer"
 }
 ```
 
@@ -100,14 +100,16 @@ The API calls are made in this sequence when making a purchase:
 ```json
 {
   "item_sold": "string",
-  "quantity": "int",
-  "money_paid": "int"
+  "quantity": "integer",
+  "money_paid": "integer"
 }
 ```
 
 
 ## 3. User Registration
 ### 3.1: Register - `/user/{userID}` (POST)
+Registering a new user into the database.
+
 **Request**:
 ```json
 {
@@ -121,30 +123,46 @@ The API calls are made in this sequence when making a purchase:
 **Response**:
 ```json
 {
-  "userID": "int",
+  "userID": "integer",
   "success": "boolean"
 }
 ```
 
 ## 4. Purchase New Stock
-### 4.1. Get Stock Purchase Plan - `/stock/` (POST)
-Buying items from wholesaler.
-
+### 4.1 Get Stock Purchase Plan - `/plan/` (GET)
+Planning wholesale purchase plan
 **Request**:
 ```json
-{
-  "productName": "string",
-  "product_type": "string",
-  "quantity": "int",
-  "price": "int",
-  
-}
+[
+  {
+    "sku": "string",
+    "category": "string",
+    "price": "integer",
+    "quantity": "integer"
+  }
+]
 ```
 **Response**:
 ```json
-{
-  "stockID": "int",
-  "items": ["string"]
-  "quantity": "int"
-}
+[
+    {
+        "sku": "string", /* Must match a sku from the catalog just passed in this call */
+        "quantity": "integer" /* A number between 1 and the quantity available for sale */
+    }
+]
 ```
+
+### 4.2. Deliver Equipment Stock - `/stock/deliver/{orderID}
+Buying items from wholesaler.
+**Request**:
+```json
+[
+  {
+    "sku": "string",
+    "category": "string",
+    "price": "integer",
+    "quantity": "integer"
+  }
+]
+```
+
