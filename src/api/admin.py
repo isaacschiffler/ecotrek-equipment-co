@@ -11,19 +11,13 @@ router = APIRouter(
     dependencies=[Depends(auth.get_api_key)],
 )
 
-@router.post("/reset")
-def reset():
+@router.post("/test")
+def test():
     """
     TEST....
     """
     with db.engine.begin() as connection:
-        connection.execute(sqlalchemy.text(        """
-        CREATE TABLE test (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(255),
-            age INTEGER
-        );
-        """))
+        print("connection success")
 
 
                  
