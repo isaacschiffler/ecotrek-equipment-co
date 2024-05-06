@@ -20,10 +20,10 @@ CREATE TABLE products (
 
 CREATE TABLE cart_items (
     cart_id INT4 REFERENCES carts(id),
-    potion_id INT4 REFERENCES products(id),
+    product_id INT4 REFERENCES products(id),
     quantity INT4,
     price INT4,
-    PRIMARY KEY (cart_id, potion_id)
+    PRIMARY KEY (cart_id, product_id)
 );
 
 CREATE TABLE stock_ledger (
@@ -32,5 +32,11 @@ CREATE TABLE stock_ledger (
     product_id INT4 REFERENCES products(id),
     change INT4,
     description TEXT
+);
+
+CREATE TABLE product_categories (
+    product_id INT4 REFERENCES products(id),
+    category_id INT4 REFERENCES categories(id),
+    PRIMARY KEY (product_id, category_id)
 );
     
