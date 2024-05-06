@@ -16,7 +16,8 @@ CREATE TABLE products (
     name TEXT,
     description TEXT,
     price INT4,
-    quantity INT4
+    quantity INT4,
+    category_id INT4 REFERENCES categories(id)
 );
 
 CREATE TABLE cart_items (
@@ -40,11 +41,3 @@ CREATE TABLE categories (
     type TEXT UNIQUE,
     description TEXT
 );
-
-CREATE TABLE product_categories (
-    product_id INT4 REFERENCES products(id),
-    category_id INT4 REFERENCES categories(id),
-    PRIMARY KEY (product_id, category_id)
-);
-
-    
