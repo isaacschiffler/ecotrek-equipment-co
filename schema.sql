@@ -6,7 +6,8 @@ CREATE TABLE customers (
 
 CREATE TABLE carts (
     id SERIAL PRIMARY KEY,
-    customer_id INT4 REFERENCES customers(id)
+    customer_id INT4 REFERENCES customers(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE products (
