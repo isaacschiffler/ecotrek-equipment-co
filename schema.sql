@@ -35,9 +35,16 @@ CREATE TABLE stock_ledger (
     description TEXT
 );
 
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    type TEXT UNIQUE,
+    description TEXT
+);
+
 CREATE TABLE product_categories (
     product_id INT4 REFERENCES products(id),
     category_id INT4 REFERENCES categories(id),
     PRIMARY KEY (product_id, category_id)
 );
+
     
