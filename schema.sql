@@ -10,6 +10,12 @@ CREATE TABLE carts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    type TEXT UNIQUE,
+    description TEXT
+);
+
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     sku TEXT,
@@ -36,8 +42,16 @@ CREATE TABLE stock_ledger (
     description TEXT
 );
 
-CREATE TABLE categories (
+CREATE TABLE money_ledger (
     id SERIAL PRIMARY KEY,
-    type TEXT UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    change INT4,
     description TEXT
+);
+
+CREATE TABLE PROCESSED (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    job_id INT8 null,
+    type text null
 );
