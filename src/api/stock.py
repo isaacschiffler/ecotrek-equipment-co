@@ -19,6 +19,46 @@ class Stock(BaseModel):
     price: int
     quantity: int
 
+@router.post("/deliver/{order_id}")
+def post_deliver_stock(stock_plan: list[Stock], order_id: int):
+
+    total_cost = 0
+    for item in stock_plan:
+        quantity = item.quantity
+        price = item.price
+        total_cost += price * quantity
+
+    with db.engine.begin() as connection:
+        try:
+            # Update the gold ledger
+            connection.execute(sqlalchemy.text("""
+                INSERT INTO money_ledger (change, description)
+                VALUES (:cost, 'deliver_stock_plan');
+            """), {'cost': -total_cost})
+
+            for item in stock_plan:
+                sku = item.sku
+                price = item.price
+                quantity = item.quantity
+                category = item.category
+
+                connection.execute(sqlalchemy.text("""
+                        INSERT INTO products (sku, price, quantity, category)
+                        VALUES (:sku, :price, :quantity, :category);
+                    """), {
+                        'sku': sku,
+                        'price': price,
+                        'quantity': quantity,
+                        'category': category
+                    })
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            connection.rollback()
+
+    print (f"Delivered these products: {stock_plan}")
+
+    return "OK"
+
 @router.post("/plan")
 def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
     """ 
@@ -42,18 +82,29 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
     """
     with db.engine.begin() as connection:
         total_money = connection.execute(sqlalchemy.text("SELECT SUM(change) AS money FROM money_ledger")).fetchone()[0]
+        if total_money is None:
+            total_money = 0
         print(total_money)
+
     money_count = 0
-    quant = 0
     stock_plan = []
-    for i in range(len(wholesale_catalog)):
-        if (wholesale_catalog[i].price + money_count <= total_money):
-            quant += 1
+    
+    # Sort catalog by price ascending
+    wholesale_catalog.sort(key=lambda x: x.price)
+    
+    for item in wholesale_catalog:
+        # Calculate the maximum quantity that can be purchased
+        max_quantity = min(item.quantity, (total_money - money_count) // item.price)
+        if max_quantity > 0:
             stock_plan.append({
-                "sku": wholesale_catalog[i].sku,
-                "quantity": quant
+                "sku": item.sku,
+                "quantity": max_quantity,
+                "price": item.price,
+                "category": int(item.category)
             })
-            money_count += wholesale_catalog[i].price
+            money_count += max_quantity * item.price
+
+    print(f"Stock plan: {stock_plan}")
 
     return stock_plan
                 

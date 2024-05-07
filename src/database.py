@@ -8,7 +8,6 @@ def database_connection_url():
 
     return os.environ.get("POSTGRES_URI")
 
-engine = create_engine(database_connection_url())
-
+engine = create_engine(database_connection_url(), pool_pre_ping=True)
 # create tables in metadata
 metadata_obj = sqlalchemy.MetaData()
