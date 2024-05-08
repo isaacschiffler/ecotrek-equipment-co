@@ -15,45 +15,36 @@ router = APIRouter(
 
 class Stock(BaseModel):
     sku: str
-    category:str
+    category_id:int
     price: int
     quantity: int
 
 @router.post("/deliver/{order_id}")
 def post_deliver_stock(stock_plan: list[Stock], order_id: int):
-
     total_cost = 0
     for item in stock_plan:
-        quantity = item.quantity
-        price = item.price
-        total_cost += price * quantity
+        total_cost += item.price * item.quantity
 
     with db.engine.begin() as connection:
         try:
-            # Update the gold ledger
             connection.execute(sqlalchemy.text("""
                 INSERT INTO money_ledger (change, description)
                 VALUES (:cost, 'deliver_stock_plan');
             """), {'cost': -total_cost})
 
             for item in stock_plan:
-                sku = item.sku
-                price = item.price
-                quantity = item.quantity
-                category = item.category
-
                 connection.execute(sqlalchemy.text("""
-                        INSERT INTO products (sku, price, quantity, category)
-                        VALUES (:sku, :price, :quantity, :category);
+                        INSERT INTO products (sku, price, quantity, category_id)
+                        VALUES (:sku, :price, :quantity, :category_id);
                     """), {
-                        'sku': sku,
-                        'price': price,
-                        'quantity': quantity,
-                        'category': category
+                        'sku': item.sku,
+                        'price': item.price,
+                        'quantity': item.quantity,
+                        'category_id': item.category_id  # Correctly reference the integer ID
                     })
         except Exception as e:
             print(f"An error occurred: {e}")
-            connection.rollback()
+
 
     print (f"Delivered these products: {stock_plan}")
 
@@ -67,7 +58,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
     [
         {
             "sku": "string",
-            "category": "string",
+            "category_id": "integer",
             "price": "integer",
             "quantity": "integer"
         }
@@ -100,7 +91,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
                 "sku": item.sku,
                 "quantity": max_quantity,
                 "price": item.price,
-                "category": int(item.category)
+                "category_id": item.category_id
             })
             money_count += max_quantity * item.price
 
