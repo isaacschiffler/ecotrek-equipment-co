@@ -17,7 +17,15 @@ def reset():
     TEST....
     """
     with db.engine.begin() as connection:
-        print("connection success")
+        connection.execute(sqlalchemy.text("DELETE FROM cart_items"))
+        connection.execute(sqlalchemy.text("DELETE FROM carts"))
+        connection.execute(sqlalchemy.text("DELETE FROM customers"))
+        connection.execute(sqlalchemy.text("DELETE FROM processed"))
+        connection.execute(sqlalchemy.text("DELETE FROM stock_ledger"))
+        connection.execute(sqlalchemy.text("DELETE FROM money_ledger"))
+        connection.execute(sqlalchemy.text("""INSERT INTO money_ledger (change, description)
+                                              VALUES (1000, 'seed money')
+                                           """))
 
 
                  
