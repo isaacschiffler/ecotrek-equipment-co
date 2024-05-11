@@ -26,7 +26,7 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "customerID": "integer"
+  "userID": "integer"
 }
 ```
 
