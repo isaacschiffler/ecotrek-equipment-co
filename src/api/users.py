@@ -27,7 +27,7 @@ def user_register(newUser: User):
         "name": "string",
         "email": "string",
         "phone_number": "string",
-            "password": "string",   *** Note - Include + Hash?
+        "password": "string",   *** Note - Include + Hash?
         "preferred_activities": ["string"]
         }
     RES
