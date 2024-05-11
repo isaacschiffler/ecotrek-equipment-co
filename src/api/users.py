@@ -14,7 +14,6 @@ router = APIRouter(
 )
 
 class User(BaseModel):
-    sku: str
     name: str
     email: str
     phone_number: str
@@ -42,13 +41,13 @@ def user_register(newUser: User):
     with db.engine.begin() as connection:
         userID = connection.execute(
             sqlalchemy.text("INSERT INTO users (name, email, phone_number, preferred_activities) "
-                            "VALUES (:name, :email, :phone_number, preferred_activities) RETURNING id"),
+                            "VALUES (:name, :email, :phone_number, :preferred_activities) RETURNING id"),
                             {"name": newUser.name,
                              "email": newUser.email,
                             "phone_number": newUser.phone_number, 
                             "preferred_activities": newUser.preferred_activities}).scalar_one()
     
-        print(f"Creating user for {User.name} with id {userID}")
+        print(f"Creating user for {newUser.name} with id {userID}")
 
         if (userID):
             success = True
