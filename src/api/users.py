@@ -5,7 +5,9 @@ import sqlalchemy
 from sqlalchemy.sql import func
 from sqlalchemy import text
 from src import database as db
-
+from enum import Enum
+from typing import List
+from pydantic import BaseModel
 
 router = APIRouter(
     prefix="/users",
@@ -13,11 +15,17 @@ router = APIRouter(
     dependencies=[Depends(auth.get_api_key)],
 )
 
+class PreferredActivity(str, Enum):
+    Hiking = "Hiking"
+    Camping = "Camping"
+
+
 class User(BaseModel):
     name: str
     email: str
     phone_number: str
-    preferred_activities: str
+    preferred_activities: List[PreferredActivity]
+
 
 @router.post("/user/{userID}")
 def user_register(newUser: User):
@@ -27,8 +35,7 @@ def user_register(newUser: User):
         "name": "string",
         "email": "string",
         "phone_number": "string",
-        "password": "string",   *** Note - Include + Hash?
-        "preferred_activities": ["string"]
+        "preferred_activities": List[PreferredActivity]
         }
     RES
         {
