@@ -74,7 +74,7 @@ The API calls are made in this sequence when making a purchase:
 **Request**:
 ```json
 {
-  "productName": "integer",
+  "productName": "string",
   "quantity": "integer",
   "price": "integer",
   "condition": "string",
