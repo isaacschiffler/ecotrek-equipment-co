@@ -19,6 +19,7 @@ def reset():
     with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text("DELETE FROM cart_items"))
         connection.execute(sqlalchemy.text("DELETE FROM carts"))
+        connection.execute(sqlalchemy.text("DELETE FROM users"))
         connection.execute(sqlalchemy.text("DELETE FROM customers"))
         connection.execute(sqlalchemy.text("DELETE FROM processed"))
         connection.execute(sqlalchemy.text("DELETE FROM stock_ledger"))

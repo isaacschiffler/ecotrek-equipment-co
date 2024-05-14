@@ -40,6 +40,7 @@ app.include_router(stock.router)
 app.include_router(users.router)
 app.include_router(carts.router)
 app.include_router(catalog.router)
+app.include_router(admin.router)
 
 @app.exception_handler(exceptions.RequestValidationError)
 @app.exception_handler(ValidationError)
