@@ -68,3 +68,27 @@ CREATE TABLE USERS (
     preferred_activities text null,
     constraint customers_pkey primary key (id)
   );
+
+INSERT INTO money_ledger (change, description) 
+VALUES (1000, 'start with $1000 to spend');
+
+INSERT INTO products (sku, name, description, category_id, sale_price, daily_rental_price)
+VALUES ('RED_JANSPORT_BCKPK', 'Red Jansport Backpack', 'Primarily for everyday use', 2, 70, 5);
+
+INSERT INTO stock_ledger(product_id, change, description, trans_id)
+VALUES (1, 5, 'Delivered 5 units of RED_JANSPORT_BCKPK', 1);
+
+INSERT INTO processed(job_id, type)
+VALUES (1, 'stock_delivery')
+
+INSERT INTO categories(type, description)
+VALUES ('SHELTER', Null);
+
+INSERT INTO categories(type, description)
+VALUES ('SLEEPING', Null);
+
+INSERT INTO categories(type, description)
+VALUES ('BACKPACKING', Null);
+
+INSERT INTO categories(type, description)
+VALUES ('COOKING', Null);
