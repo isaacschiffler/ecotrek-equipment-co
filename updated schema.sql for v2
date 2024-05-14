@@ -1,12 +1,14 @@
-CREATE TABLE customers (
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    email TEXT
+    email TEXT,
+    phone_number INT8,
+    preferred_activites TEXT
 );
 
 CREATE TABLE carts (
     id SERIAL PRIMARY KEY,
-    customer_id INT4 REFERENCES customers(id),
+    user_id INT4 REFERENCES user(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -21,9 +23,9 @@ CREATE TABLE products (
     sku TEXT,
     name TEXT,
     description TEXT,
-    price INT4,
-    quantity INT4,
     category_id INT4 REFERENCES categories(id)
+    sale_price INT4,
+    daily_rental_price INT4
 );
 
 CREATE TABLE cart_items (
@@ -39,17 +41,19 @@ CREATE TABLE stock_ledger (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     product_id INT4 REFERENCES products(id),
     change INT4,
-    description TEXT
+    description TEXT,
+    trans_id INT4 REFERENCES processed(id)
 );
 
 CREATE TABLE money_ledger (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     change INT4,
-    description TEXT
+    description TEXT,
+    trans_id INT4 REFERENCES processed(id)
 );
 
-CREATE TABLE PROCESSED (
+CREATE TABLE processed (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     job_id INT8 null,
