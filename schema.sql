@@ -55,3 +55,12 @@ CREATE TABLE PROCESSED (
     job_id INT8 null,
     type text null
 );
+
+CREATE TABLE USERS (
+    id serial,
+    name text null,
+    email text null,
+    phone_number bigint null,
+    preferred_activities text null,
+    constraint customers_pkey primary key (id)
+  );
