@@ -33,18 +33,36 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
             for item in stock_plan:
                 total_cost += item.price * item.quantity
 
-                # Insert into products table
+                # Check if the item exists in the products table
                 product_result = connection.execute(sqlalchemy.text("""
-                    INSERT INTO products (sku, sale_price, category_id)
-                    VALUES (:sku, :price, :category_id)
-                    RETURNING id;
-                """), {
-                    'sku': item.sku,
-                    'price': item.price,
-                    'category_id': item.category_id
-                })
-                product_id = product_result.fetchone()[0]
+                    SELECT id FROM products WHERE sku = :sku;
+                """), {'sku': item.sku})
+                existing_product = product_result.fetchone()
 
+                if existing_product:
+                    # Update the existing product
+                    product_id = existing_product[0]
+                    connection.execute(sqlalchemy.text("""
+                        UPDATE products 
+                        SET sale_price = :price, category_id = :category_id 
+                        WHERE id = :product_id;
+                    """), {
+                        'price': item.price,
+                        'category_id': item.category_id,
+                        'product_id': product_id
+                    })
+                else:
+                    # Insert a new product
+                    product_result = connection.execute(sqlalchemy.text("""
+                        INSERT INTO products (sku, sale_price, category_id)
+                        VALUES (:sku, :price, :category_id)
+                        RETURNING id;
+                    """), {
+                        'sku': item.sku,
+                        'price': item.price,
+                        'category_id': item.category_id
+                    })
+                    product_id = product_result.fetchone()[0]
                 # Insert into stock_ledger table
                 connection.execute(sqlalchemy.text("""
                     INSERT INTO stock_ledger (product_id, change, description, trans_id)
