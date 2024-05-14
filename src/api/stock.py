@@ -22,33 +22,52 @@ class Stock(BaseModel):
 @router.post("/deliver/{order_id}")
 def post_deliver_stock(stock_plan: list[Stock], order_id: int):
     total_cost = 0
-    for item in stock_plan:
-        total_cost += item.price * item.quantity
-
     with db.engine.begin() as connection:
         try:
+            # Generate a new transaction ID
+            trans_id_result = connection.execute(sqlalchemy.text("""
+                INSERT INTO processed (job_id, type) VALUES (:job_id, :type) RETURNING id;
+            """), {'job_id': order_id, 'type': 'stock_delivery'})
+            trans_id = trans_id_result.fetchone()[0]
+
+            for item in stock_plan:
+                total_cost += item.price * item.quantity
+
+                # Insert into products table
+                product_result = connection.execute(sqlalchemy.text("""
+                    INSERT INTO products (sku, sale_price, category_id)
+                    VALUES (:sku, :price, :category_id)
+                    RETURNING id;
+                """), {
+                    'sku': item.sku,
+                    'price': item.price,
+                    'category_id': item.category_id
+                })
+                product_id = product_result.fetchone()[0]
+
+                # Insert into stock_ledger table
+                connection.execute(sqlalchemy.text("""
+                    INSERT INTO stock_ledger (product_id, change, description, trans_id)
+                    VALUES (:product_id, :change, :description, :trans_id);
+                """), {
+                    'product_id': product_id,
+                    'change': item.quantity,
+                    'description': f"Delivered {item.quantity} units of {item.sku}",
+                    'trans_id': trans_id
+                })
+
+            # Insert into money_ledger table
             connection.execute(sqlalchemy.text("""
                 INSERT INTO money_ledger (change, description)
                 VALUES (:cost, 'deliver_stock_plan');
             """), {'cost': -total_cost})
 
-            for item in stock_plan:
-                connection.execute(sqlalchemy.text("""
-                        INSERT INTO products (sku, price, quantity, category_id)
-                        VALUES (:sku, :price, :quantity, :category_id);
-                    """), {
-                        'sku': item.sku,
-                        'price': item.price,
-                        'quantity': item.quantity,
-                        'category_id': item.category_id  # Correctly reference the integer ID
-                    })
+            print(f"Delivered these products: {stock_plan}")
+
+            return "OK"
         except Exception as e:
             print(f"An error occurred: {e}")
-
-
-    print (f"Delivered these products: {stock_plan}")
-
-    return "OK"
+            
 
 @router.post("/plan")
 def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
