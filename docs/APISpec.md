@@ -14,10 +14,11 @@ The API calls are made in this sequence when making a purchase:
   {
     "productID": "integer",
     "product_name": "string",
-    "price": "integer",
+    "category": "string",
+    "sale price": "integer",
+    "rental price": "integer",
     "stock": "integer",
-    "description": "string",
-    "condition": "string"
+    "description": "string"
   }
 ]
 ```
