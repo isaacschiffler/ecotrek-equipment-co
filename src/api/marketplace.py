@@ -45,8 +45,15 @@ def marketplace_sell(listingID: int, quantity: int):
                                                'listingID': listingID,
                                                'quantity': quantity
                                            }])
-
-    return "OK"
+        name = connection.execute(text("""SELECT product_name FROM marketplace WHERE id = :id """), {"id": listingID}).scalar_one()
+        price = connection.execute(text("""SELECT price FROM marketplace WHERE id = :id """), {"id": listingID}).scalar_one()
+    
+    money_paid = price *quantity
+    
+    return {"item_sold": name,
+            "quantity": quantity,
+            "money_paid": money_paid
+        }
 
 
 @router.post("/marketplace")
@@ -81,6 +88,7 @@ def marketplace_list(newListing: newProduct):
                                                         'description': newListing.description
                                                     }]).fetchone()[0]
 
-    return listingID
+    return  {"listingID": listingID}
+    
                 
 
