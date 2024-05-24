@@ -18,7 +18,7 @@ class newProduct(BaseModel):
     condition: str
     description: str
 
-@router.post("/marketplace/{listingID}")
+@router.post("/{listingID}")
 def marketplace_sell(listingID: int, quantity: int):
     """
     Sell Item
@@ -45,18 +45,20 @@ def marketplace_sell(listingID: int, quantity: int):
                                                'listingID': listingID,
                                                'quantity': quantity
                                            }])
-        name = connection.execute(text("""SELECT product_name FROM marketplace WHERE id = :id """), {"id": listingID}).scalar_one()
-        price = connection.execute(text("""SELECT price FROM marketplace WHERE id = :id """), {"id": listingID}).scalar_one()
+        result = connection.execute(text("""SELECT product_name, price FROM marketplace WHERE id = :id """), {"id": listingID}).fetchone()
+        name = result.product_name
+        price = result.price
+        #price = connection.execute(text("""SELECT price FROM marketplace WHERE id = :id """), {"id": listingID}).scalar_one()
     
-    money_paid = price *quantity
+    money_paid = price * quantity
     
     return {"item_sold": name,
             "quantity": quantity,
             "money_paid": money_paid
-        }
+            }
 
 
-@router.post("/marketplace")
+@router.post("/")
 def marketplace_list(newListing: newProduct):
     """ 
     List Item
