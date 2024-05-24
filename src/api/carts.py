@@ -11,7 +11,6 @@ from math import ceil
 router = APIRouter(
     prefix="/carts",
     tags=["cart"],
-    dependencies=[Depends(auth.get_api_key)],
 )
 
 @router.post("/")
@@ -84,7 +83,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                                                     [{
                                                         'job_id': cart_id
                                                     }]).fetchone()[0]
-        
+
         connection.execute(sqlalchemy.text("""INSERT INTO stock_ledger 
                                            (trans_id, product_id, change, description)
                                            SELECT :trans_id, product_id, -1 * quantity, :description
@@ -107,17 +106,18 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                                                'cart_id': cart_id,
                                                'description': 'sale'
                                            }])
-        
+
         # get quantity of items sold
-        quant_bought = connection.execute(sqlalchemy.text("SELECT SUM(change) FROM stock_ledger WHERE trans_id = :trans_id"),
+        quant_bought = connection.execute(sqlalchemy.text("SELECT SUM(change) as total FROM stock_ledger WHERE trans_id = :trans_id"),
                                           [{
                                               'trans_id': trans_id
-                                          }]).fetchone()[0] * -1
+                                          }]).fetchone().total * -1
+
         # get money paid
         income = connection.execute(sqlalchemy.text("SELECT change FROM money_ledger WHERE trans_id = :trans_id"),
                                     [{
                                         'trans_id': trans_id
-                                    }]).fetchone()[0]
+                                    }]).fetchone().change
         
     print("stock bought: " + str(quant_bought) + " money paid: " + str(income))
 

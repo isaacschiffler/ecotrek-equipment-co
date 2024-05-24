@@ -23,7 +23,7 @@ class PreferredActivity(str, Enum):
 class User(BaseModel):
     name: str
     email: str
-    phone_number: str
+    phone_number: int
     preferred_activities: List[PreferredActivity]
 
 
@@ -34,7 +34,7 @@ def user_register(newUser: User):
         {
         "name": "string",
         "email": "string",
-        "phone_number": "string",
+        "phone_number": "int",
         "preferred_activities": List[PreferredActivity]
         }
     RES
