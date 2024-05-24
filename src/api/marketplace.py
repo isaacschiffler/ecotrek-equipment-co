@@ -48,7 +48,6 @@ def marketplace_sell(listingID: int, quantity: int):
         result = connection.execute(text("""SELECT product_name, price FROM marketplace WHERE id = :id """), {"id": listingID}).fetchone()
         name = result.product_name
         price = result.price
-        #price = connection.execute(text("""SELECT price FROM marketplace WHERE id = :id """), {"id": listingID}).scalar_one()
     
     money_paid = price * quantity
     
