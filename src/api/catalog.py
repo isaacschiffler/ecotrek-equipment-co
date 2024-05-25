@@ -88,7 +88,7 @@ def get_recs(userId: int):
             current_item = cart.product_id
             print("current cart: ", current_cart)
             print("current product_id: ", current_item, " ", cart.name, " ", cart.category_id)
-            categories[cart.category_id] = categories[cart.category_id] + 1
+            categories[cart.category_id] = categories[cart.category_id] + 1 * cart.quantity
 
         print(categories)
 
