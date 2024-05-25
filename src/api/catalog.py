@@ -2,10 +2,14 @@ import sqlalchemy
 from src import database as db
 from fastapi import APIRouter
 
-router = APIRouter()
+
+router = APIRouter(
+    prefix="/catalog",
+    tags=["catalog"],
+)
 
 
-@router.get("/catalog/", tags=["catalog"])
+@router.get("/")
 def get_catalog():
     catalog = []
     with db.engine.begin() as connection:
@@ -32,3 +36,40 @@ def get_catalog():
             )
                 
     return catalog
+
+
+@router.get("/recs")
+def get_recs(userId: int):
+    """
+    REQ:
+        {
+        "userId": "integer"
+        }
+    RES:
+        [{
+            "productID": "integer",
+            "product_name": "string",
+            "category": "string",
+            "sale price": "integer",
+            "rental price": "integer",
+            "stock": "integer",
+            "description": "string"
+        }]
+    """
+    cat = []
+
+    with db.engine.begin() as connection:
+        carts = connection.execute(sqlalchemy.text("""SELECT *
+                                                   FROM carts
+                                                   WHERE user_id = :user_id"""),
+                                                   [{
+                                                       "user_id": userId
+                                                   }]).fetchall()
+        print("carts: ", carts)
+        for i in range(0, len(carts)):
+            current_cart = carts[i].id 
+            print("current cart: ", current_cart)
+
+            cart_items = connection.execute(sqlalchemy.text("""SELECT * from carts"""))
+
+    return cat
