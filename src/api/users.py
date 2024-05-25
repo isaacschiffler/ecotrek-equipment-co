@@ -12,7 +12,6 @@ from pydantic import BaseModel
 router = APIRouter(
     prefix="/users",
     tags=["users"],
-    dependencies=[Depends(auth.get_api_key)],
 )
 
 class PreferredActivity(str, Enum):

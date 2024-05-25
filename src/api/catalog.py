@@ -57,19 +57,39 @@ def get_recs(userId: int):
         }]
     """
     cat = []
+    categories = {}
 
     with db.engine.begin() as connection:
-        carts = connection.execute(sqlalchemy.text("""SELECT *
-                                                   FROM carts
-                                                   WHERE user_id = :user_id"""),
+        carts = connection.execute(sqlalchemy.text("""SELECT c.id, ci.product_id, ci.quantity, ci.price, p.name, p.category_id
+                                                   FROM carts as c
+                                                   JOIN cart_items as ci on ci.cart_id = c.id
+                                                   JOIN products as p on p.id = ci.product_id
+                                                   WHERE c.user_id = :user_id"""),
                                                    [{
                                                        "user_id": userId
                                                    }]).fetchall()
-        print("carts: ", carts)
-        for i in range(0, len(carts)):
-            current_cart = carts[i].id 
-            print("current cart: ", current_cart)
+        
+        if carts == []:
+            return get_catalog()
+        
+        category_rows = connection.execute(sqlalchemy.text("""SELECT id
+                                                           FROM categories""")).fetchall()
+        for i in category_rows:
+            categories[i.id] = 0
 
-            cart_items = connection.execute(sqlalchemy.text("""SELECT * from carts"""))
+        for cart in carts:
+            current_cart = cart.id 
+            current_item = cart.product_id
+            print("current cart: ", current_cart)
+            print("current product_id: ", current_item, " ", cart.name)
+            categories[i.id] = categories[i.id] + 1
+
+        
+
+        print(categories)
+
+
+
+            
 
     return cat
