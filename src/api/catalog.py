@@ -61,6 +61,7 @@ def get_recs(userId: int):
     """
     cat = []
     categories = {}
+    money_spends = {}
 
     with db.engine.begin() as connection:
         # get cart item entries for the user in the past month
@@ -84,10 +85,6 @@ def get_recs(userId: int):
             categories[i.id] = 0
 
         for cart in carts:
-            current_cart = cart.id 
-            current_item = cart.product_id
-            print("current cart: ", current_cart)
-            print("current product_id: ", current_item, " ", cart.name, " ", cart.category_id)
             categories[cart.category_id] = categories[cart.category_id] + 1 * cart.quantity
 
         print(categories)
@@ -95,11 +92,35 @@ def get_recs(userId: int):
         sorted_categories = [k for k, v in sorted(categories.items(), key=lambda item: item[1], reverse=True)]
         print(sorted_categories)
 
+        # get money spent for past orders
+        moneys = connection.execute(sqlalchemy.text("""SELECT m.change as total, ci.price as unit_price, ci.quantity as quantity
+                                                    FROM processed as p
+                                                    JOIN money_ledger as m on m.trans_id = p.id
+                                                    JOIN carts as c on c.id = p.job_id
+                                                    JOIN cart_items as ci on ci.cart_id = c.id
+                                                    WHERE c.user_id = :user_id"""),
+                                                    [{
+                                                        'user_id': userId
+                                                    }]).fetchall()
+        
+        for trans in moneys:
+            money_spends[trans.unit_price] = money_spends.get(trans.unit_price, 0) + trans.quantity
+
+        sorted_spends = [k for k, v in sorted(money_spends.items(), key=lambda item: item[1], reverse=True)]
+        print(sorted_spends)
+            
+
         # Create a CASE statement for custom ordering
-        case_order = case(
+        case_categories = case(
             {value: index + 1 for index, value in enumerate(sorted_categories)},
             value=db.products.c.category_id,
             else_=len(sorted_categories) + 1
+        )
+
+        case_spends = case(
+            {value: index + 1 for index, value in enumerate(sorted_spends)},
+            value=db.products.c.sale_price,  # Assuming sale_price is the unit_price equivalent
+            else_=len(sorted_spends) + 1
         )
 
         stmt = (
@@ -123,7 +144,8 @@ def get_recs(userId: int):
                 db.products.c.daily_rental_price,
                 db.categories.c.type
             ).order_by(
-                case_order
+                case_categories,
+                case_spends
             )
         )
 
