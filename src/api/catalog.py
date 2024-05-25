@@ -61,11 +61,12 @@ def get_recs(userId: int):
     categories = {}
 
     with db.engine.begin() as connection:
+        # get cart item entries for the user in the past month
         carts = connection.execute(sqlalchemy.text("""SELECT c.id, ci.product_id, ci.quantity, ci.price, p.name, p.category_id
                                                    FROM carts as c
                                                    JOIN cart_items as ci on ci.cart_id = c.id
                                                    JOIN products as p on p.id = ci.product_id
-                                                   WHERE c.user_id = :user_id"""),
+                                                   WHERE c.user_id = :user_id and c.created_at >= CURRENT_DATE - INTERVAL '31 days'"""),
                                                    [{
                                                        "user_id": userId
                                                    }]).fetchall()
