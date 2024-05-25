@@ -10,7 +10,6 @@ from src import database as db
 router = APIRouter(
     prefix="/stock",
     tags=["stock"],
-    dependencies=[Depends(auth.get_api_key)],
 )
 
 class Stock(BaseModel):

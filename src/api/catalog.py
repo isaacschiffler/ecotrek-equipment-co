@@ -23,17 +23,18 @@ def get_catalog():
         print("Current inventory:", stock)
 
         for item in stock:
-            catalog.append(
-                {
-                    "productID": item.id,
-                    "product_name": item.name,
-                    "category": item.type,
-                    "sale price": item.sale_price,
-                    "rental price": item.daily_rental_price,
-                    "stock": item.quantity,
-                    "description": item.description
-                }
-            )
+            if item.quantity > 0:
+                catalog.append(
+                    {
+                        "productID": item.id,
+                        "product_name": item.name,
+                        "category": item.type,
+                        "sale price": item.sale_price,
+                        "rental price": item.daily_rental_price,
+                        "stock": item.quantity,
+                        "description": item.description
+                    }
+                )
                 
     return catalog
 
@@ -70,6 +71,8 @@ def get_recs(userId: int):
                                                    }]).fetchall()
         
         if carts == []:
+            # just give them the normal catalog...
+            print("nothing bought before...")
             return get_catalog()
         
         category_rows = connection.execute(sqlalchemy.text("""SELECT id
