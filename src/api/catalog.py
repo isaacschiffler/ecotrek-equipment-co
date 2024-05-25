@@ -88,9 +88,30 @@ def get_recs(userId: int):
             print("current product_id: ", current_item, " ", cart.name)
             categories[i.id] = categories[i.id] + 1
 
-        
-
         print(categories)
+
+        sorted_categories = [k for k, v in sorted(categories.items(), key=lambda item: item[1], reverse=True)]
+        print(sorted_categories)
+
+        # ORDER BY
+        #     CASE id
+        #         WHEN 3 THEN 1
+        #         WHEN 1 THEN 2
+        #         WHEN 4 THEN 3
+        #         WHEN 2 THEN 4
+        #         ELSE 5 -- For ids not in the list, place them at the end
+        #     END;
+        stock = connection.execute(sqlalchemy.text("""SELECT products.id, products.name, products.description, SUM(change) AS quantity, products.sale_price, products.daily_rental_price, categories.type
+                                                      FROM stock_ledger
+                                                      JOIN products ON products.id = stock_ledger.product_id
+                                                      JOIN categories ON products.category_id = categories.id
+                                                      GROUP BY products.id, products.name, products.description, products.sale_price, products.daily_rental_price, categories.type;
+                                                      ORDER BY
+                                                        CASE product.category_id
+                                                            WHEN :
+                                                   """)).fetchall()
+
+
 
 
 
