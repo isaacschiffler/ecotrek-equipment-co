@@ -18,24 +18,29 @@ def reset():
     """
     with db.engine.begin() as connection:
         # Delete existing table entries IN ORDER of foreign key relations
-        connection.execute(sqlalchemy.text("DELETE FROM cart_items"))
-        connection.execute(sqlalchemy.text("DELETE FROM carts"))
-        connection.execute(sqlalchemy.text("DELETE FROM users"))
-        connection.execute(sqlalchemy.text("DELETE FROM stock_ledger"))
-        connection.execute(sqlalchemy.text("DELETE FROM money_ledger"))
-        connection.execute(sqlalchemy.text("DELETE FROM processed"))
-        connection.execute(sqlalchemy.text("DELETE FROM products"))
-        connection.execute(sqlalchemy.text("DELETE FROM categories"))
-        connection.execute(sqlalchemy.text("DELETE FROM marketplace"))
+        connection.execute(sqlalchemy.text("""
+            DELETE FROM cart_items;
+            DELETE FROM carts;
+            DELETE FROM users;
+            DELETE FROM stock_ledger;
+            DELETE FROM money_ledger;
+            DELETE FROM processed;
+            DELETE FROM products;
+            DELETE FROM categories;
+            DELETE FROM marketplace;
+        """))
 
         # Reset id incrementations to 1
-        connection.execute(sqlalchemy.text("ALTER SEQUENCE carts_id_seq RESTART WITH 1;"))
-        connection.execute(sqlalchemy.text("ALTER SEQUENCE stock_ledger_id_seq RESTART WITH 1;"))
-        connection.execute(sqlalchemy.text("ALTER SEQUENCE money_ledger_id_seq RESTART WITH 1;"))
-        connection.execute(sqlalchemy.text("ALTER SEQUENCE processed_id_seq RESTART WITH 1;"))
-        connection.execute(sqlalchemy.text("ALTER SEQUENCE products_id_seq RESTART WITH 1;"))
-        connection.execute(sqlalchemy.text("ALTER SEQUENCE categories_id_seq RESTART WITH 1;"))
-        connection.execute(sqlalchemy.text("ALTER SEQUENCE marketplace_id_seq RESTART WITH 1;"))
+        connection.execute(sqlalchemy.text("""
+            ALTER SEQUENCE carts_id_seq RESTART WITH 1;
+            ALTER SEQUENCE stock_ledger_id_seq RESTART WITH 1;
+            ALTER SEQUENCE money_ledger_id_seq RESTART WITH 1;
+            ALTER SEQUENCE processed_id_seq RESTART WITH 1;
+            ALTER SEQUENCE products_id_seq RESTART WITH 1;
+            ALTER SEQUENCE categories_id_seq RESTART WITH 1;
+            ALTER SEQUENCE marketplace_id_seq RESTART WITH 1;
+        """))
+
 
 
 
