@@ -69,7 +69,7 @@ The API calls are made in this sequence when making a purchase:
 }
 ```
 
-### 1.5: Catalog Recomendations - '/catalog/recs' (POST)
+### 1.5: Catalog Recomendations - '/catalog/{cartID}/recs' (POST)
 **Request**:
 ```json
 {
