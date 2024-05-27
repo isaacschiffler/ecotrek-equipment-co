@@ -67,7 +67,29 @@ The API calls are made in this sequence when making a purchase:
   "num_items_bought": "integer",
   "money_paid": "integer"
 }
-``` 
+```
+
+### 1.5: Catalog Recomendations - '/catalog/recs' (POST)
+**Request**:
+```json
+{
+  "userId": "integer"
+}
+```
+
+
+**Response**:
+```json
+    [{
+        "productID": "integer",
+        "product_name": "string",
+        "category": "string",
+        "sale price": "integer",
+        "rental price": "integer",
+        "stock": "integer",
+        "description": "string"
+    }]
+```
 
 ## 2. User Listing Item for Sale
 ### 2.1: Post item - `/marketplace/` (POST)
