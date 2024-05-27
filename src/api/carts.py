@@ -23,8 +23,8 @@ def create_cart(userID: int):
     """
     with db.engine.begin() as connection:
         user_exists = connection.execute(
-            sqlalchemy.text("SELECT COUNT(*) FROM users WHERE id = :user_id"),
-            {"user_id": userID}
+            sqlalchemy.text("SELECT COUNT(id) FROM users WHERE id = :user_id"),
+        {"user_id": userID}
         ).scalar() > 0
         
         if not user_exists:
