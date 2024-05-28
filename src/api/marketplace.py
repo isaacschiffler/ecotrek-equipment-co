@@ -39,15 +39,16 @@ def marketplace_sell(listingID: int, quantity: int):
     with db.engine.begin() as connection:
         # update quantity level of item; as of now, money handling is done between users, so our money ledger does not change
         connection.execute(sqlalchemy.text("""UPDATE marketplace 
-                                           SET quantity = (SELECT quantity FROM marketplace where id = :listingID) - :quantity
-                                           WHERE id = :listingID"""), 
-                                           [{
-                                               'listingID': listingID,
-                                               'quantity': quantity
-                                           }])
+                                                SET quantity = quantity - :quantity
+                                                WHERE id = :listingID
+                                                AND quantity >= :quantity
+                                            """), 
+                                            {'listingID': listingID, 'quantity': quantity})
         result = connection.execute(text("""SELECT product_name, price FROM marketplace WHERE id = :id """), {"id": listingID}).fetchone()
-        name = result.product_name
-        price = result.price
+        if result is None:
+            raise ValueError
+    name = result.product_name
+    price = result.price
     
     money_paid = price * quantity
     
