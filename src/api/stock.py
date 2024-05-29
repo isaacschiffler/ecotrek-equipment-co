@@ -69,7 +69,7 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
                 """), {
                     'product_id': product_id,
                     'change': item.quantity,
-                    'description': f"Delivered {item.quantity} units of {item.sku}",
+                    'description': "Delivered {} units of {}".format(item.quantity, item.sku),
                     'trans_id': trans_id
                 })
 
@@ -79,11 +79,11 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
                 VALUES (:cost, 'deliver_stock_plan');
             """), {'cost': -total_cost})
 
-            print(f"Delivered these products: {stock_plan}")
+            print("Delivered these products: {}".format(stock_plan))
 
             return "OK"
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print("An error occurred: {}".format(e))
             
 
 @router.post("/plan")
@@ -131,7 +131,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
             })
             money_count += max_quantity * item.price
 
-    print(f"Stock plan: {stock_plan}")
+    print("Stock plan: {}".format(stock_plan))
+
 
     return stock_plan
                 

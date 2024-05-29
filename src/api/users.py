@@ -66,7 +66,8 @@ def user_register(newUser: User):
                             "phone_number": newUser.phone_number, 
                             "preferred_activities": preferred_activities_str}).scalar_one()
     
-        print(f"Creating user for {newUser.name} with id {userID}")
+        print("Creating user for {} with id {}".format(newUser.name, userID))
+
 
         if (userID):
             success = True

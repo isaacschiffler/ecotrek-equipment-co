@@ -28,7 +28,7 @@ def create_cart(userID: int):
         ).scalar() > 0
         
         if not user_exists:
-            return {"Error": f"User with ID {userID} does not exist."}
+            return {"Error": "User with ID {} does not exist.".format(userID)}
         
         # user exists in users
         cart_id = connection.execute(
@@ -38,7 +38,8 @@ def create_cart(userID: int):
             ).scalar_one()
     
 
-    print(f"creating cart for user {userID} with id {cart_id}")
+    print("creating cart for user {} with id {}".format(userID, cart_id))
+
 
     return {"cartID": cart_id}
     

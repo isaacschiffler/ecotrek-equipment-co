@@ -47,7 +47,7 @@ def marketplace_sell(listingID: int, quantity: int):
         product_details = connection.execute(text("""SELECT product_name, price FROM marketplace WHERE id = :id """), {"id": listingID}).fetchone()
         
         if product_details is None:
-            return {f"Listing with id {listingID} Does Not Exist."}
+            return {"Listing with id {} Does Not Exist.".format(listingID)}
 
     name = product_details.product_name
     price = product_details.price
