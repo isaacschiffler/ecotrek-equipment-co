@@ -45,6 +45,15 @@ def user_register(newUser: User):
     """
 
     with db.engine.begin() as connection:
+        email_check = text("SELECT id FROM users WHERE email = :email")
+        phone_check = text("SELECT id FROM users WHERE phone_number = :phone_number ")
+        existing_email = connection.execute(email_check, {"email": newUser.email}).scalar()
+        existing_phone = connection.execute(phone_check, {"phone_number": newUser.phone_number}).scalar()
+
+        if existing_email or existing_phone:
+            # If the email exists, return a message indicating the email is already in use
+            return {"userID": None, "success": False, "message": "Email and/or Phone Number already exists"}
+
         userID = connection.execute(
             sqlalchemy.text("INSERT INTO users (name, email, phone_number, preferred_activites) "
                             "VALUES (:name, :email, :phone_number, :preferred_activities) RETURNING id"),
