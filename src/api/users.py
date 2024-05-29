@@ -68,7 +68,6 @@ def user_register(newUser: User):
     
         print("Creating user for {} with id {}".format(newUser.name, userID))
 
-
         if (userID):
             success = True
         else:

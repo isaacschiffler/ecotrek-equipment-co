@@ -19,15 +19,7 @@ def reset():
     with db.engine.begin() as connection:
         # Delete existing table entries IN ORDER of foreign key relations
         connection.execute(sqlalchemy.text("""
-            DELETE FROM cart_items;
-            DELETE FROM carts;
-            DELETE FROM users;
-            DELETE FROM stock_ledger;
-            DELETE FROM money_ledger;
-            DELETE FROM processed;
-            DELETE FROM products;
-            DELETE FROM categories;
-            DELETE FROM marketplace;
+           TRUNCATE cart_items, carts, users, stock_ledger, money_ledger, processed, products, categories, marketplace
         """))
 
         # Reset id incrementations to 1

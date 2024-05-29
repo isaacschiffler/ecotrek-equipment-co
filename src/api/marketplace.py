@@ -83,7 +83,7 @@ def marketplace_list(newListing: newProduct):
         listingID = connection.execute(sqlalchemy.text("""INSERT INTO marketplace
                                                     (product_name, quantity, price, condition, description) VALUES
                                                     (:productName, :quantity, :price, :condition, :description)
-                                                    returning id"""),
+                                                    RETURNING id"""),
                                                     [{
                                                         'productName': newListing.productName,
                                                         'quantity': newListing.quantity,

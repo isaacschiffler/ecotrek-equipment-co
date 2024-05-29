@@ -26,8 +26,7 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
             # Generate a new transaction ID
             trans_id_result = connection.execute(sqlalchemy.text("""
                 INSERT INTO processed (job_id, type) VALUES (:job_id, :type) RETURNING id;
-            """), {'job_id': order_id, 'type': 'stock_delivery'})
-            trans_id = trans_id_result.fetchone()[0]
+            """), {'job_id': order_id, 'type': 'stock_delivery'}).fetchone()[0]
 
             for item in stock_plan:
                 total_cost += item.price * item.quantity
@@ -35,12 +34,11 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
                 # Check if the item exists in the products table
                 product_result = connection.execute(sqlalchemy.text("""
                     SELECT id FROM products WHERE sku = :sku;
-                """), {'sku': item.sku})
-                existing_product = product_result.fetchone()
-
-                if existing_product:
+                """), {'sku': item.sku}).fetchone()
+                
+                if product_result:
                     # Update the existing product
-                    product_id = existing_product[0]
+                    product_id = product_result[0]
                     connection.execute(sqlalchemy.text("""
                         UPDATE products 
                         SET sale_price = :price, category_id = :category_id 
@@ -62,6 +60,7 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
                         'category_id': item.category_id
                     })
                     product_id = product_result.fetchone()[0]
+                
                 # Insert into stock_ledger table
                 connection.execute(sqlalchemy.text("""
                     INSERT INTO stock_ledger (product_id, change, description, trans_id)
@@ -70,7 +69,7 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
                     'product_id': product_id,
                     'change': item.quantity,
                     'description': "Delivered {} units of {}".format(item.quantity, item.sku),
-                    'trans_id': trans_id
+                    'trans_id': trans_id_result
                 })
 
             # Insert into money_ledger table

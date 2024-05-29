@@ -100,7 +100,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         trans_id = connection.execute(sqlalchemy.text("""
             INSERT INTO processed(job_id, type) 
             VALUES
-            (:job_id, 'item_sale') returning id;
+            (:job_id, 'item_sale') RETURNING id;
             """),
             {
                 'job_id': cart_id
