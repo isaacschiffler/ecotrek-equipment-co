@@ -6,9 +6,16 @@ CREATE TABLE users (
     preferred_activites TEXT
 );
 
+CREATE TABLE processed (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    job_id INT8 null,
+    type text null
+);
+
 CREATE TABLE carts (
     id SERIAL PRIMARY KEY,
-    user_id INT4 REFERENCES user(id),
+    user_id INT4 REFERENCES users(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,7 +30,7 @@ CREATE TABLE products (
     sku TEXT,
     name TEXT,
     description TEXT,
-    category_id INT4 REFERENCES categories(id)
+    category_id INT4 REFERENCES categories(id),
     sale_price INT4,
     daily_rental_price INT4
 );
@@ -53,20 +60,13 @@ CREATE TABLE money_ledger (
     trans_id INT4 REFERENCES processed(id)
 );
 
-CREATE TABLE processed (
+CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    job_id INT8 null,
-    type text null
-);
-
-CREATE TABLE USERS (
-    id serial,
-    name text null,
-    email text null,
-    phone_number bigint null,
-    preferred_activities text null,
-    constraint customers_pkey primary key (id)
+    created_at timestamp with time zone not null default now(),
+    product_id INT4 REFERENCES products(id),
+    customer_id INT4 REFERENCES users(id),
+    rating INT4,
+    description text null
 );
 
 create table

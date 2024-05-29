@@ -2,7 +2,7 @@ import sqlalchemy
 from src import database as db
 from fastapi import APIRouter
 from sqlalchemy.sql import select, func, case
-
+from datetime import date
 
 
 router = APIRouter(
@@ -26,12 +26,31 @@ def get_catalog():
 
         for item in stock:
             if item.quantity > 0:
+                rating = connection.execute(sqlalchemy.text("SELECT avg(rating) FROM reviews where product_id = :pid"), {'pid': item.id}).fetchone()[0]
+        
+                # create a factor to scale up or down the price based on how well the product is rated
+                pricingFactor = 1
+                if rating is not None:
+                    pricingFactor -= (float(rating) - 3) / 20
+                
+                currentMonth = date.today().strftime("%B")
+
+                # discounting backpacking equipment in ceratin months
+                if item.type == "BACKPACKING" and currentMonth in ['April', 'May', 'June']:
+                        pricingFactor -= 0.1
+                
+                # increasing the price of shelter for peak times
+                if item.type == "SHELTER" and currentMonth in ['October', 'November', 'December', "January"]:
+                        pricingFactor += 0.05
+
+                print("final pricing factor:", pricingFactor)
+                print("original sale price:", item.sale_price)
                 catalog.append(
                     {
                         "productID": item.id,
                         "product_name": item.name,
                         "category": item.type,
-                        "sale price": item.sale_price,
+                        "sale price": round(item.sale_price * pricingFactor, 2),
                         "rental price": item.daily_rental_price,
                         "stock": item.quantity,
                         "description": item.description
@@ -170,3 +189,83 @@ def get_recs(userId: int):
             
 
     return cat
+
+
+@router.post("/review")
+def add_review(userId: int, productId: int, rating: int, description: str):
+    """
+    Add reviews for a product
+
+    REQ:
+        {
+        "userId": "integer",
+        "productId": "integer"
+        }
+    RES:
+        {
+        "success": "boolean",
+        "error": "string"
+        }
+    """
+    if rating < 0 or rating > 5:
+        return {"success": False, "error": "rating must be between 0 and 5"}
+    
+    with db.engine.begin() as connection:
+        connection.execute(sqlalchemy.text("""
+                                            INSERT INTO reviews (product_id, customer_id, rating, description)
+                                            VALUES (:pid, :uid, :rating, :desc);
+                                            """), {'pid': productId, 'uid': userId, 'rating': rating, 'desc': description})
+    
+    return {"success": True, "error": "none"}
+
+
+@router.get("/search")
+def search_reviews(productId: int, displayLimit: int = 10, keywords : str = "", rating: int = -1):
+    """
+    Search through reviews based on keywords or rating
+
+    REQ:
+        {
+        "productId": "integer",
+        "displayLimit": "integer",
+        "keywords": "string",
+        "rating": "integer"
+        }
+    RES:
+        [{
+            "name": "string",
+            "rating": "integer",
+            "description": "string"
+        }]
+    """
+    with db.engine.begin() as connection:
+        stmt = (
+            sqlalchemy.select(
+                db.products.c.name,
+                db.reviews.c.rating,
+                db.reviews.c.description
+            )
+            .limit(displayLimit)
+            .select_from(
+                db.reviews
+                .join(db.products, db.products.c.id == db.reviews.c.product_id)
+            )
+            .where(db.reviews.c.description.like(f"%{keywords}%"))
+        )
+
+        if rating != -1:
+            stmt = stmt.where(db.reviews.c.rating == rating)
+        
+        result = connection.execute(stmt).fetchall()
+        retVal = []
+
+        for item in result:
+            retVal.append(
+                {
+                    "name": item.name,
+                    "rating": item.rating,
+                    "description": item.description
+                }
+            )
+
+        return retVal

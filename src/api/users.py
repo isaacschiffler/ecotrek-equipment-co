@@ -46,7 +46,7 @@ def user_register(newUser: User):
 
     with db.engine.begin() as connection:
         userID = connection.execute(
-            sqlalchemy.text("INSERT INTO users (name, email, phone_number, preferred_activities) "
+            sqlalchemy.text("INSERT INTO users (name, email, phone_number, preferred_activites) "
                             "VALUES (:name, :email, :phone_number, :preferred_activities) RETURNING id"),
                             {"name": newUser.name,
                              "email": newUser.email,

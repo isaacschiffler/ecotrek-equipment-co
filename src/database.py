@@ -1,6 +1,6 @@
 import os
 import dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 import sqlalchemy
 
 def database_connection_url():
@@ -10,7 +10,10 @@ def database_connection_url():
 
 engine = create_engine(database_connection_url(), pool_pre_ping=True)
 # create tables in metadata
-metadata_obj = sqlalchemy.MetaData()
+metadata_obj = MetaData()
+metadata_obj.reflect(bind=engine)
+reviews = metadata_obj.tables['reviews']
+products = metadata_obj.tables['products']
 
 
 processed = sqlalchemy.Table("processed", metadata_obj, autoload_with=engine)
