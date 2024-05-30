@@ -103,7 +103,9 @@ INSERT INTO categories(type, description)
 VALUES ('SHELTER', Null), 
        ('SLEEPING', Null), 
        ('BACKPACKING', Null), 
-       ('COOKING', Null);
+       ('COOKING', Null),
+       ('CLOTHING', NULL),
+       ('FOOTWEAR', NULL);
 
 INSERT INTO products (sku, name, description, category_id, sale_price, daily_rental_price)
 VALUES 

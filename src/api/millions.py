@@ -20,22 +20,27 @@ def add_products():
 
     colors = np.array(["green", "blue", "red", "white", "black", "orange", "purple", "pink", "gray", "transparent"])
 
-    items = np.array(["tent", "backpack", "stove", "beanie", "cap", "t shirt", "chair", "sleeping bag", "boots", "jacket", "sandals", "socks", "water bottle"])
+    cloth_items = np.array(["beanie", "cap", "t shirt", "jacket", "hoodie"])
+    camp_items = np.array(["tent", "backpack", "stove", "chair", "sleeping bag", "water bottle"])
+    foot_items = np.array(["socks", "boots", "sandals", "socks"])
 
     sizes = np.array(["S", "M", "L"])
 
     products = []
 
-    for i in range(0, 60):
-        color = np.random.choice(colors).upper()
-        item = np.random.choice(items).upper()
-        size = np.random.choice(sizes).upper()
-        sku = size + "_" + color + "_" + item
-        name = color + " " + item
-        if sku not in products:
-            products.append(sku)
-        else:
-            i -= 1
+    with db.engine.begin() as connection:
+
+        # clothing products
+        for i in range(0, 60):
+            color = np.random.choice(colors).upper()
+            item = np.random.choice(cloth_items).upper()
+            size = np.random.choice(sizes).upper()
+            sku = size + "_" + color + "_" + item
+            name = color + " " + item
+            if sku not in products:
+                products.append(sku)
+            else:
+                i -= 1
 
     print(products)
     return
