@@ -15,18 +15,26 @@ router = APIRouter(
 )
 
 
-colors = ["green", "blue", "red", "white", "black", "orange", "purple", "pink", "gray", "transparent"]
+@router.post("/products")
+def add_products():
 
-items = ["tent", "backpack", "stove", "beanie", "cap", "t shirt", "chair", "sleeping bag", "boots", "jacket", "sandals", "socks", "water bottle"]
+    colors = np.array(["green", "blue", "red", "white", "black", "orange", "purple", "pink", "gray", "transparent"])
 
-sizes = ["S", "M", "L"]
+    items = np.array(["tent", "backpack", "stove", "beanie", "cap", "t shirt", "chair", "sleeping bag", "boots", "jacket", "sandals", "socks", "water bottle"])
 
-products = []
+    sizes = np.array(["S", "M", "L"])
 
-for i in range(0, 60):
-    color = np.random.choice(colors)
-    item = np.random.choice(items)
-    size = np.random.choice(sizes)
-    products += size.upper() + "_"
+    products = []
 
-print(products)
+    for i in range(0, 60):
+        color = np.random.choice(colors).upper()
+        item = np.random.choice(items).upper()
+        size = np.random.choice(sizes).upper()
+        sku = size + "_" + color + "_" + item
+        if sku not in products:
+            products.append(sku)
+        else:
+            i -= 1
+
+    print(products)
+    return
