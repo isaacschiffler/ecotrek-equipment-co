@@ -29,9 +29,11 @@ def add_products():
     products = []
 
     with db.engine.begin() as connection:
-
-        # clothing products
-        for i in range(0, 60):
+        # clothing proudcts
+        id = connection.execute(sqlalchemy.text("""SELECT id
+                                                          FROM categories
+                                                          WHERE type = CLOTHING""")).fetchone()[0]
+        for i in range(0, 20):
             color = np.random.choice(colors).upper()
             item = np.random.choice(cloth_items).upper()
             size = np.random.choice(sizes).upper()
@@ -41,6 +43,38 @@ def add_products():
                 products.append(sku)
             else:
                 i -= 1
+
+        # camp product
+        id = connection.execute(sqlalchemy.text("""SELECT id
+                                                          FROM categories
+                                                          WHERE type = BACKPACKING""")).fetchone()[0]
+        for i in range(0, 30):
+            color = np.random.choice(colors).upper()
+            item = np.random.choice(camp_items).upper()
+            size = np.random.choice(sizes).upper()
+            sku = size + "_" + color + "_" + item
+            name = color + " " + item
+            if sku not in products:
+                products.append(sku)
+            else:
+                i -= 1
+
+        #footwear products
+        id = connection.execute(sqlalchemy.text("""SELECT id
+                                                          FROM categories
+                                                          WHERE type = CLOTHING""")).fetchone()[0]
+
+        for i in range(0, 15):
+            color = np.random.choice(colors).upper()
+            item = np.random.choice(foot_items).upper()
+            size = np.random.choice(sizes).upper()
+            sku = size + "_" + color + "_" + item
+            name = color + " " + item
+            if sku not in products:
+                products.append(sku)
+            else:
+                i -= 1
+    
 
     print(products)
     return
