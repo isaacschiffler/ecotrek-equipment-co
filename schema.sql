@@ -81,7 +81,18 @@ create table
     constraint marketplace_pkey primary key (id)
 ) tablespace pg_default;
 
-
+create table
+  public.reviews (
+    id serial,
+    created_at timestamp with time zone not null default now(),
+    product_id integer null,
+    customer_id integer null,
+    rating integer null,
+    description text null,
+    constraint reviews_pkey primary key (id),
+    constraint reviews_customer_id_fkey foreign key (customer_id) references users (id),
+    constraint reviews_product_id_fkey foreign key (product_id) references products (id)
+) tablespace pg_default;
 
 
 -- Insert initial seed data
