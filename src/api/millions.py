@@ -15,6 +15,7 @@ router = APIRouter(
     tags=["millions"],
 )
 
+fake = Faker()
 
 @router.post("/products")
 def add_products():
@@ -38,45 +39,90 @@ def add_products():
             color = np.random.choice(colors).upper()
             item = np.random.choice(cloth_items).upper()
             size = np.random.choice(sizes).upper()
-            sku = size + "_" + color + "_" + item
+            sku = size + "_" + color + "_" + item.replace(' ', '_')
             name = color + " " + item
-            sale_price = np.random(25, 100)
-            print(sale_price)
-            if sku not in products:
-                products.append(sku)
+            rent_price = np.random.randint(5, 15)
+            sale_price = np.random.randint(25, 100)
+            descr = "Very high quality, comfy, and soft " + name.lower()
+            item = {
+                "sku": sku,
+                "name": name,
+                "description": descr,
+                "cat_id": id,
+                "sale_price": sale_price,
+                "rent_price": rent_price
+            }
+            if item not in products:
+                products.append(item)
             else:
                 i -= 1
 
         # camp product
         id = connection.execute(sqlalchemy.text("""SELECT id
                                                           FROM categories
-                                                          WHERE type = BACKPACKING""")).fetchone()[0]
+                                                          WHERE type = 'BACKPACKING'""")).fetchone()[0]
         for i in range(0, 30):
             color = np.random.choice(colors).upper()
             item = np.random.choice(camp_items).upper()
             size = np.random.choice(sizes).upper()
-            sku = size + "_" + color + "_" + item
+            sku = size + "_" + color + "_" + item.replace(' ', '_')
             name = color + " " + item
-            if sku not in products:
-                products.append(sku)
+            sale_price = np.random.randint(50, 200)
+            rent_price = np.random.randint(5, 15)
+            descr = "Very useful and practical " + name.lower()
+            item = {
+                "sku": sku,
+                "name": name,
+                "description": descr,
+                "cat_id": id,
+                "sale_price": sale_price,
+                "rent_price": rent_price
+            }
+            if item not in products:
+                products.append(item)
             else:
                 i -= 1
 
         #footwear products
         id = connection.execute(sqlalchemy.text("""SELECT id
                                                           FROM categories
-                                                          WHERE type = CLOTHING""")).fetchone()[0]
+                                                          WHERE type = 'CLOTHING'""")).fetchone()[0]
         for i in range(0, 15):
             color = np.random.choice(colors).upper()
             item = np.random.choice(foot_items).upper()
             size = np.random.choice(sizes).upper()
-            sku = size + "_" + color + "_" + item
+            sku = size + "_" + color + "_" + item.replace(' ', '_')
             name = color + " " + item
-            if sku not in products:
-                products.append(sku)
+            sale_price = np.random.randint(20, 100)
+            rent_price = np.random.randint(5, 15)
+            descr = "Very comfortable and lasting " + name.lower()
+            item = {
+                "sku": sku,
+                "name": name,
+                "description": descr,
+                "cat_id": id,
+                "sale_price": sale_price,
+                "rent_price": rent_price
+            }            
+            if item not in products:
+                products.append(item)
             else:
                 i -= 1
     
+        # insert the products into the products table
+        connection.execute(sqlalchemy.text("""INSERT INTO products (sku, name, description, category_id, sale_price, daily_rental_price)
+                                           VALUES (:sku, :name, :description, :cat_id, :sale_price, :rent_price)"""),
+                                           products)
 
-    print(products)
-    return
+    return products
+
+@router.post("/stock_buy")
+def buy_stock():
+    return "OK"
+
+@router.post("users")
+def make_users():
+    # probably like 100,000 users
+    # each user has 2 carts?
+    # each cart as 3-4 items?
+    return "OK"
