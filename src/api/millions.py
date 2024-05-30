@@ -31,6 +31,7 @@ def add_products():
         item = np.random.choice(items).upper()
         size = np.random.choice(sizes).upper()
         sku = size + "_" + color + "_" + item
+        name = color + " " + item
         if sku not in products:
             products.append(sku)
         else:
