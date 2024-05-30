@@ -10,11 +10,8 @@ def database_connection_url():
 
 engine = create_engine(database_connection_url(), pool_pre_ping=True)
 # create tables in metadata
-metadata_obj = MetaData()
+metadata_obj = sqlalchemy.MetaData()
 metadata_obj.reflect(bind=engine)
-reviews = metadata_obj.tables['reviews']
-products = metadata_obj.tables['products']
-
 
 processed = sqlalchemy.Table("processed", metadata_obj, autoload_with=engine)
 users = sqlalchemy.Table("users", metadata_obj, autoload_with=engine)
@@ -25,3 +22,4 @@ stock_ledger = sqlalchemy.Table("stock_ledger", metadata_obj, autoload_with=engi
 carts = sqlalchemy.Table("carts", metadata_obj, autoload_with=engine)
 cart_items = sqlalchemy.Table("cart_items", metadata_obj, autoload_with=engine)
 marketplace = sqlalchemy.Table("marketplace", metadata_obj, autoload_with=engine)
+reviews = sqlalchemy.Table("reviews", metadata_obj, autoload_with=engine)
