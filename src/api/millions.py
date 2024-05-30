@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from src.api import auth
 from enum import Enum
 import sqlalchemy
+from src import database as db
 from fastapi import APIRouter
 from datetime import date
 from faker import Faker
@@ -32,13 +33,15 @@ def add_products():
         # clothing proudcts
         id = connection.execute(sqlalchemy.text("""SELECT id
                                                           FROM categories
-                                                          WHERE type = CLOTHING""")).fetchone()[0]
+                                                          WHERE type = 'CLOTHING'""")).fetchone()[0]
         for i in range(0, 20):
             color = np.random.choice(colors).upper()
             item = np.random.choice(cloth_items).upper()
             size = np.random.choice(sizes).upper()
             sku = size + "_" + color + "_" + item
             name = color + " " + item
+            sale_price = np.random(25, 100)
+            print(sale_price)
             if sku not in products:
                 products.append(sku)
             else:
@@ -63,7 +66,6 @@ def add_products():
         id = connection.execute(sqlalchemy.text("""SELECT id
                                                           FROM categories
                                                           WHERE type = CLOTHING""")).fetchone()[0]
-
         for i in range(0, 15):
             color = np.random.choice(colors).upper()
             item = np.random.choice(foot_items).upper()
