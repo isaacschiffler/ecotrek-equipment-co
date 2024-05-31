@@ -38,7 +38,7 @@ def reset():
 
         # Insert initial seed data
         connection.execute(sqlalchemy.text("""INSERT INTO money_ledger (change, description) 
-                                              VALUES (1000, 'start with $1000 to spend')"""))
+                                              VALUES (100000, 'start with $100000 to spend')"""))
 
         connection.execute(sqlalchemy.text("""INSERT INTO categories(type, description) 
                                               VALUES ('SHELTER', Null), 
