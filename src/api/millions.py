@@ -118,6 +118,8 @@ def add_products():
 
 @router.post("/stock_buy")
 def buy_stock():
+
+    
     return "OK"
 
 @router.post("users")
