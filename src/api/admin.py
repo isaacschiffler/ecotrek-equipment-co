@@ -44,7 +44,9 @@ def reset():
                                               VALUES ('SHELTER', Null), 
                                                      ('SLEEPING', Null), 
                                                      ('BACKPACKING', Null), 
-                                                     ('COOKING', Null)"""))
+                                                     ('COOKING', Null),
+                                                    ('CLOTHING', Null),
+                                                    ('FOOTWEAR', Null)"""))
 
         # Adding products to the products table
         connection.execute(sqlalchemy.text("""
