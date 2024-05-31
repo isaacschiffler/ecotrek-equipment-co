@@ -8,7 +8,7 @@ from src import database as db
 router = APIRouter(
     prefix="/admin",
     tags=["admin"],
-    dependencies=[Depends(auth.get_api_key)],
+   # dependencies=[Depends(auth.get_api_key)],
 )
 
 @router.post("/reset")
@@ -38,7 +38,7 @@ def reset():
 
         # Insert initial seed data
         connection.execute(sqlalchemy.text("""INSERT INTO money_ledger (change, description) 
-                                              VALUES (100000, 'start with $100000 to spend')"""))
+                                              VALUES (150000, 'start with $150000 to spend')"""))
 
         connection.execute(sqlalchemy.text("""INSERT INTO categories(type, description) 
                                               VALUES ('SHELTER', Null), 

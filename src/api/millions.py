@@ -9,6 +9,7 @@ from datetime import date
 from faker import Faker
 import numpy as np
 import random
+from src.api import stock
 
 router = APIRouter(
     prefix="/millions",
@@ -17,7 +18,6 @@ router = APIRouter(
 
 fake = Faker()
 
-@router.post("/products")
 def add_products():
 
     colors = np.array(["green", "blue", "red", "white", "black", "orange", "purple", "pink", "gray", "transparent"])
@@ -116,13 +116,29 @@ def add_products():
 
     return products
 
+class Stock(BaseModel):
+    sku: str
+    category_id: int
+    price: int
+    quantity: int
+
 @router.post("/stock_buy")
 def buy_stock():
-
-    
+    product_list = add_products()
+    print("products added...")
+    buy_plan = []
+    for i in product_list:
+        buy_plan.append(Stock(
+            sku=i["sku"],
+            category_id=i["cat_id"],
+            price=round(i["sale_price"] * (1 / 1.2), 2),
+            quantity=20
+        ))
+    stock.post_deliver_stock(buy_plan, 1)
+    print("products bought and delivered...")
     return "OK"
 
-@router.post("users")
+@router.post("/users")
 def make_users():
     # probably like 100,000 users
     # each user has 2 carts?

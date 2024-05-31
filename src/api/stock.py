@@ -41,7 +41,7 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
                     product_id = product_result[0]
                     connection.execute(sqlalchemy.text("""
                         UPDATE products 
-                        SET sale_price = :price, category_id = :category_id 
+                        SET sale_price = :price * 1.2, category_id = :category_id 
                         WHERE id = :product_id;
                     """), {
                         'price': item.price,
@@ -52,7 +52,7 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
                     # Insert a new product
                     product_result = connection.execute(sqlalchemy.text("""
                         INSERT INTO products (sku, sale_price, category_id)
-                        VALUES (:sku, :price, :category_id)
+                        VALUES (:sku, :price * 1.2, :category_id)
                         RETURNING id;
                     """), {
                         'sku': item.sku,

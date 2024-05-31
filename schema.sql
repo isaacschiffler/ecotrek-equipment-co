@@ -97,7 +97,7 @@ create table
 
 -- Insert initial seed data
 INSERT INTO money_ledger (change, description) 
-VALUES (100000, 'start with $100000 to spend');
+VALUES (150000, 'start with $150000 to spend');
 
 INSERT INTO categories(type, description)
 VALUES ('SHELTER', Null), 
