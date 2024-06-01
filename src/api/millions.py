@@ -184,26 +184,60 @@ def make_users():
 
     #add items to each cart
     with db.engine.begin() as connection:
-        for j in range(0, 3):
-            for i in range(9, 74):
-                print("added product ", i, " to carts")
-                cart_id_high = ((i + j - 8) * 3333) % 200000
-                cart_id_low = ((i + j - 9) * 3333) % 200000
-                rand_quant = random.randint(1, 3)
-                connection.execute(sqlalchemy.text("""INSERT INTO cart_items (cart_id, product_id, quantity, price)
-                                                SELECT c.id as cart_id, p.id as product_id, :rand_num, p.sale_price
-                                                FROM carts as c
-                                                JOIN products as p on p.id = :prod_id
-                                                WHERE c.id > :low and c.id <= :high
-                                                """),
-                                                [{
-                                                    "rand_num": rand_quant,
-                                                    "prod_id": i,
-                                                    "low": cart_id_low,
-                                                    "high": cart_id_high
-                                                }])
-    print("over 630,000 items added to carts")
+        for i in range(9, 74):
+            print("added product ", i, " to carts")
+            cart_id_high = ((i - 8) * 3333) % 200000
+            cart_id_low = ((i - 9) * 3333) % 200000
+            rand_quant = random.randint(1, 3)
+            connection.execute(sqlalchemy.text("""INSERT INTO cart_items (cart_id, product_id, quantity, price)
+                                            SELECT c.id as cart_id, p.id as product_id, :rand_num, p.sale_price
+                                            FROM carts as c
+                                            JOIN products as p on p.id = :prod_id
+                                            WHERE c.id > :low and c.id <= :high
+                                            """),
+                                            [{
+                                                "rand_num": rand_quant,
+                                                "prod_id": i,
+                                                "low": cart_id_low,
+                                                "high": cart_id_high
+                                            }])
+    print("200,000 items added to carts")
 
-    # now checkout for them all... definitely gonna be well over 1M, maybe just do 2 items per cart above?^^^^^
+    # now checkout for them all
+    with db.engine.begin() as connection:
+        # add all to processed
+        connection.execute(sqlalchemy.text("""
+            INSERT INTO processed (job_id, type) 
+            SELECT id, :type
+            FROM carts
+            RETURNING id;
+            """),
+            {
+                'type': 'cart checkout'
+            }).fetchall()
+        
+        connection.execute(sqlalchemy.text("""                    
+            INSERT INTO stock_ledger (trans_id, product_id, change, description)
+            SELECT cart_id, product_id, -1 * quantity, :description
+            FROM cart_items
+            """),
+            {
+                'description': 'sale'
+            })
+        
+        connection.execute(sqlalchemy.text("""
+            INSERT INTO money_ledger(trans_id, change, description)
+            SELECT cart_id, SUM(quantity * price), :description
+            FROM cart_items
+            GROUP BY cart_items.cart_id;"""),
+            {
+                'description': 'sale'
+            })
+    
+    print("200,000 carts checkout out")
+
+
+
+        
 
     return "OK"

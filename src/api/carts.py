@@ -104,7 +104,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             """),
             {
                 'job_id': cart_id
-        }).fetchone()[0]
+            }).fetchone()[0]
 
         connection.execute(sqlalchemy.text("""                    
             INSERT INTO stock_ledger (trans_id, product_id, change, description)
@@ -115,7 +115,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 'trans_id': trans_id,
                 'description': 'sale',
                 'cart_id': cart_id
-        })
+            })
         
         connection.execute(sqlalchemy.text("""
             INSERT INTO money_ledger(trans_id, change, description)
@@ -127,7 +127,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 'trans_id': trans_id,
                 'cart_id': cart_id,
                 'description': 'sale'
-        })
+            })
 
         # get quantity of items sold
         quant_bought = connection.execute(sqlalchemy.text("SELECT SUM(change) as total FROM stock_ledger WHERE trans_id = :trans_id"),
