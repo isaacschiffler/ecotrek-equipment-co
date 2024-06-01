@@ -14,6 +14,7 @@ from src.api import stock
 router = APIRouter(
     prefix="/millions",
     tags=["millions"],
+    dependencies=[Depends(auth.get_api_key)],
 )
 
 fake = Faker()
@@ -125,7 +126,6 @@ class Stock(BaseModel):
     price: int
     quantity: int
 
-@router.post("/stock_buy")
 def buy_stock():
     product_list = add_products()
     print("products added...")
@@ -141,8 +141,8 @@ def buy_stock():
     print("products bought and delivered...")
     return "OK"
 
-@router.post("/users")
-def make_users():
+@router.post("/add_all")
+def do_it_all():
     # probably like 100,000 users
     # each user has 2 carts?
     # each cart as 3-4 items?
@@ -209,12 +209,11 @@ def make_users():
         connection.execute(sqlalchemy.text("""
             INSERT INTO processed (job_id, type) 
             SELECT id, :type
-            FROM carts
-            RETURNING id;
+            FROM carts;
             """),
             {
-                'type': 'cart checkout'
-            }).fetchall()
+                'type': "cart checkout"
+            })
         
         connection.execute(sqlalchemy.text("""                    
             INSERT INTO stock_ledger (trans_id, product_id, change, description)
@@ -233,11 +232,47 @@ def make_users():
             {
                 'description': 'sale'
             })
-    
     print("200,000 carts checkout out")
 
+    with db.engine.begin() as connection:
+        descs = [
+            "very bad",
+            "pretty darn bad",
+            "quite mid",
+            "I was impressed",
+            "THE GOAT"
+        ]
+        for i in range(1, 6):
+            connection.execute(sqlalchemy.text("""
+                                            INSERT INTO reviews (product_id, customer_id, rating, description)
+                                            SELECT ci.product_id, c.user_id, :rating, :desc
+                                            FROM carts as c
+                                            JOIN cart_items as ci on ci.cart_id = c.id
+                                            WHERE c.id > ((:rating - 1) * 40000) and c.id <= (:rating * 40000)
+                                            ;
+                                            """), 
+                                            {'rating': i, 'desc': descs[i - 1]})
 
+    print("200,000 reviews added")
 
+    # toss in a few marketplace uploads
+    with db.engine.begin() as connection:
+        items = []
+
+        for i in range(0, 300):
+            items.append({
+                "productName": fake.catch_phrase(),
+                "quantity": random.randint(1, 5),
+                "price": round(random.uniform(5.0, 250.0), 2),
+                "condition": 'used',
+                "description": fake.text(max_nb_chars=200)
+            })
+        connection.execute(sqlalchemy.text("""INSERT INTO marketplace
+                                                    (product_name, quantity, price, condition, description) VALUES
+                                                    (:productName, :quantity, :price, :condition, :description)
+                                                    """),
+                                                    items)
+    print("300 items added to marketplace")
         
 
     return "OK"

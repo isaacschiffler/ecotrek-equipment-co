@@ -8,7 +8,7 @@ from src import database as db
 router = APIRouter(
     prefix="/admin",
     tags=["admin"],
-   # dependencies=[Depends(auth.get_api_key)],
+    dependencies=[Depends(auth.get_api_key)],
 )
 
 @router.post("/reset")
