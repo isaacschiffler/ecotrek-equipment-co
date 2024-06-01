@@ -1,5 +1,6 @@
 # Concurency Issues
-Two users (User A and User B) are making wholesale purchase plans concurrently.
+
+1.Two users (User A and User B) are making wholesale purchase plans concurrently.
 
 ## Initial State:
 
