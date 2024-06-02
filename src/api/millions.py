@@ -248,12 +248,12 @@ def do_it_all():
                                             SELECT ci.product_id, c.user_id, :rating, :desc
                                             FROM carts as c
                                             JOIN cart_items as ci on ci.cart_id = c.id
-                                            WHERE c.id > ((:rating - 1) * 40000) and c.id <= (:rating * 40000)
+                                            WHERE c.id > ((:rating - 1) * 5000) and c.id <= (:rating * 5000)
                                             ;
                                             """), 
                                             {'rating': i, 'desc': descs[i - 1]})
 
-    print("200,000 reviews added")
+    print("25,000 reviews added")
 
     # toss in a few marketplace uploads
     with db.engine.begin() as connection:
