@@ -61,7 +61,7 @@ def rent_item(new_rental: NewRentalRequest):
             return {"success": False, "message": "End time must be after start time"}
 
 
-        # Acceptable request
+        # Acceptable request: add rental to rentals
         connection.execute(sqlalchemy.text("""
             INSERT INTO rentals (customer_id, product_id, start_time, end_time)
             VALUES (:customer_id, :product_id, :start_time, :end_time)
@@ -71,6 +71,8 @@ def rent_item(new_rental: NewRentalRequest):
             'start_time': new_rental.start_time,
             'end_time': new_rental.end_time
         })
+
+        # Update money ledger with up-front fees
     
     return {"success": True, "message": "Rental request added successfully"}
 
@@ -120,5 +122,7 @@ def return_item(return_rental: ReturnRentalRequest):
                 SET return_time = :return_time, late_fee = :late_fee
                 WHERE id = :rental_id
             """), {"return_time": return_rental.return_time, "late_fee": late_fee, "rental_id": return_rental.rental_id})
+        
+        # update money ledger with late fee
 
     return {"success": True, "message": "Item returned successfully", "late_fee": late_fee}

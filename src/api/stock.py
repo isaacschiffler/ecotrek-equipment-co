@@ -84,6 +84,8 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
         except Exception as e:
             print("An error occurred: {}".format(e))
             
+            return("An error occured. ")
+            
 
 @router.post("/plan")
 def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
