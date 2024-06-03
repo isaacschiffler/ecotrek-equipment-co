@@ -175,7 +175,7 @@ Planning wholesale purchase plan
 ]
 ```
 
-### 4.2. Deliver Equipment Stock - `/stock/deliver/{orderID}
+### 4.2. Deliver Equipment Stock - `/stock/deliver/{orderID}`
 Buying items from wholesaler.
 **Request**:
 ```json
@@ -189,3 +189,42 @@ Buying items from wholesaler.
 ]
 ```
 
+## 5. Renting Items
+### 5.1 - Rental Request - `/rentals/rent` (POST)
+Add New Rental Request
+    ReqAdd New Rental Request
+**Request**:
+```json
+    {
+        "customer_id": "integer",
+        "product_id": "integer",
+        "start_time": "datetime",
+        "end_time": "datetime"
+    }
+```
+**Response**:
+```json
+    {
+        "message": "string"
+    }
+```
+
+### 5.2 - Rental return - `/rentals/return` (POST)
+
+ Return Rental Item
+
+**Request**:
+```json
+    {
+        "rental_id": "integer",
+        "return_time": "datetime"
+    }
+```
+
+**Response**:
+```json
+    {
+        "message": "string",
+        "late_fee": "float"
+    }
+```
