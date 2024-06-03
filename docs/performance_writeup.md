@@ -4,7 +4,7 @@ Each table has the following row counts
 - users: 200k
 - carts: 200k
 - cart_items: 213k
-- reviews: 25k
+- reviews: 38k
 - processed: 200k
 - stock_ledger: 213k
 - money_ledger: 200k
