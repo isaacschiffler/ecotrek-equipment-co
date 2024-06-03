@@ -16,7 +16,11 @@ router = APIRouter(
 class PreferredActivity(str, Enum):
     Hiking = "Hiking"
     Camping = "Camping"
-
+    Running = "Running"
+    Cooking = "Cooking"
+    Backpacking = "Backpacking"
+    Hunting = "Hunting"
+    Fishing = "Fishing"
 
 class User(BaseModel):
     name: str
