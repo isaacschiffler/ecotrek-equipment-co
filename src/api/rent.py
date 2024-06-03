@@ -10,7 +10,7 @@ router = APIRouter(
     tags=["rentals"],
 )
 
-LATE_FEE_PER_HOUR = 10
+DAILY_LATE_FEE = 20
 
 class NewRentalRequest(BaseModel):
     customer_id: int
@@ -34,7 +34,8 @@ def rent_item(new_rental: NewRentalRequest):
         "end_time": "datetime"
     }
     Response:
-    {
+    {   
+        "success": "boolean",
         "message": "string"
     }
     """
@@ -64,6 +65,7 @@ def return_item(return_rental: ReturnRentalRequest):
 
     Response:
     {
+        "success": "boolean",
         "message": "string",
         "late_fee": "float"
     }
@@ -74,18 +76,19 @@ def return_item(return_rental: ReturnRentalRequest):
             {"rental_id": return_rental.rental_id}
         ).fetchone()
 
+        # Error handling
         if not rental:
-            raise HTTPException(status_code=404, detail="Rental not found")
+            return {"success": False, "message": "Rental not found.", "late_fee": 0}
 
         if rental.return_time:
-            raise HTTPException(status_code=400, detail="Item already returned")
+            return {"success": False, "message": "Item already returned", "late_fee": 0}
 
-        # Calculate late fee if applicable
+        # Calculated late fee if applicable
         end_time = rental.end_time
         return_time_dt = return_rental.return_time
         if return_time_dt > end_time:
-            late_hours = (return_time_dt - end_time).total_seconds() / 3600
-            late_fee = late_hours * LATE_FEE_PER_HOUR
+            late_days = (return_time_dt - end_time).days
+            late_fee = late_days * DAILY_LATE_FEE
         else:
             late_fee = 0
 
@@ -96,4 +99,4 @@ def return_item(return_rental: ReturnRentalRequest):
                 WHERE id = :rental_id
             """), {"return_time": return_rental.return_time, "late_fee": late_fee, "rental_id": return_rental.rental_id})
 
-    return {"message": "Item returned successfully", "late_fee": late_fee}
+    return {"success": True, "message": "Item returned successfully", "late_fee": late_fee}

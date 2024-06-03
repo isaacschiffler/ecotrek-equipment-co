@@ -205,6 +205,7 @@ Add New Rental Request
 **Response**:
 ```json
     {
+        "success": "boolean",
         "message": "string"
     }
 ```
@@ -224,6 +225,7 @@ Add New Rental Request
 **Response**:
 ```json
     {
+        "success": "boolean",
         "message": "string",
         "late_fee": "float"
     }
