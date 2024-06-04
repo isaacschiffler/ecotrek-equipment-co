@@ -165,12 +165,11 @@ def do_it_all():
             "number": number,
             "activities": activities
         })
-    print("100,000 users generated")
+    # insert users
     with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text("""INSERT INTO users (name, email, phone_number, preferred_activities)
                                            VALUES (:name, :email, :number, :activities)"""),
                                            users)
-    print("100,000 users inserted")
 
     #create carts for each user
     with db.engine.begin() as connection:
@@ -180,7 +179,7 @@ def do_it_all():
         connection.execute(sqlalchemy.text("""INSERT INTO carts (user_id)
                                            SELECT id
                                            FROM users"""))
-    print("200,000 total carts created")
+    print("carts created")
 
     #add items to each cart
     with db.engine.begin() as connection:
@@ -201,7 +200,7 @@ def do_it_all():
                                                 "low": cart_id_low,
                                                 "high": cart_id_high
                                             }])
-    print("200,000 items added to carts")
+    print("items added to carts")
 
     # now checkout for them all
     with db.engine.begin() as connection:
@@ -232,7 +231,7 @@ def do_it_all():
             {
                 'description': 'sale'
             })
-    print("200,000 carts checkout out")
+    print("carts checkout out")
 
     with db.engine.begin() as connection:
         descs = [
@@ -253,7 +252,7 @@ def do_it_all():
                                             """), 
                                             {'rating': i, 'desc': descs[i - 1]})
 
-    print("25,000 reviews added")
+    print("reviews added")
 
     # toss in a few marketplace uploads
     with db.engine.begin() as connection:
@@ -272,7 +271,7 @@ def do_it_all():
                                                     (:productName, :quantity, :price, :condition, :description)
                                                     """),
                                                     items)
-    print("300 items added to marketplace")
+    print("items added to marketplace")
         
 
     return "OK"
