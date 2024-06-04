@@ -50,6 +50,7 @@ def user_register(newUser: User):
     with db.engine.begin() as connection:
         # converting enum to str when add to table
         preferred_activities_str = ','.join(activity.value for activity in newUser.preferred_activities)
+        preferred_activities_str = "{" + preferred_activities_str + "}"
 
         email_check = text("SELECT id FROM users WHERE email = :email")
         phone_check = text("SELECT id FROM users WHERE phone_number = :phone_number ")
@@ -60,7 +61,7 @@ def user_register(newUser: User):
         if existing_email or existing_phone:
             # email or phone number already exist in table, avoiding duplicate rows
             return {"userID": None, "success": False, "message": "Email and/or Phone Number already exists"}
-
+        
         userID = connection.execute(
             sqlalchemy.text("INSERT INTO users (name, email, phone_number, preferred_activities) "
                             "VALUES (:name, :email, :phone_number, :preferred_activities) RETURNING id"),

@@ -49,7 +49,8 @@ The API calls are made in this sequence when making a purchase:
 **Response**:
 ```json
 {
-  "success": "boolean"
+  "success": "boolean",
+  "message": "string"
 }
 ```
 

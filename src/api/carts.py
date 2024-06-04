@@ -57,12 +57,57 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
     }
     RES
     {
-    "success": "boolean"
+    "success": "boolean",
+    "message": "string"
     }
 
     """
     with db.engine.begin() as connection:
-        connection.execute(sqlalchemy.text("""INSERT INTO cart_items (cart_id, product_id, quantity, price)
+        # Check if product exists
+        product_exists = connection.execute(
+            sqlalchemy.text("SELECT 1 FROM products WHERE id = :product_id"),
+            {'product_id': product_id}
+        ).scalar()
+
+        # Check if cart exists
+        cart_exists = connection.execute(
+            sqlalchemy.text("SELECT 1 FROM carts WHERE id = :cart_id"),
+            {'cart_id': cart_id}
+        ).scalar()
+
+        if not product_exists or not cart_exists:
+            # Product or cart not found, return error
+            return {"success": False, "message": "Invalid product or cart id passed. "}
+        
+        # Check if product already exists in cart
+        existing_item = connection.execute(
+            sqlalchemy.text("""
+                SELECT 1 FROM cart_items
+                WHERE cart_id = :cart_id AND product_id = :product_id
+            """),
+            {
+                'cart_id': cart_id,
+                'product_id': product_id
+            }
+        ).scalar()
+
+        if existing_item:
+            # Update quantity using UPDATE
+            connection.execute(
+                sqlalchemy.text("""
+                    UPDATE cart_items
+                    SET quantity = quantity + :quantity
+                    WHERE cart_id = :cart_id AND product_id = :product_id
+                """),
+                {
+                    'cart_id': cart_id,
+                    'product_id': product_id,
+                    'quantity': cart_item.quantity
+                }
+            )
+            print("Updated quantity in cart " + str(cart_id) + ". Product id: " + str(product_id))
+        else:
+            connection.execute(sqlalchemy.text("""INSERT INTO cart_items (cart_id, product_id, quantity, price)
                                            SELECT :cart_id, :product_id, :quantity, products.sale_price
                                            FROM products
                                            WHERE products.id = :product_id
@@ -73,9 +118,9 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
                                                'product_id': product_id
                                            })
         
-    print("new entry in cart " + str(cart_id) + ". Product id: " + str(product_id))
+            print("new entry in cart " + str(cart_id) + ". Product id: " + str(product_id))
 
-    return "OK"
+    return {"success": True, "message": "OK"}
 
 
 class CartCheckout(BaseModel):
