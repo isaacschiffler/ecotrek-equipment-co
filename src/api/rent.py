@@ -123,7 +123,7 @@ def rent_item(new_rental: NewRentalRequest):
             # Update stock ledgers with temporary dip in product quantity
             connection.execute(sqlalchemy.text("""
                 INSERT INTO stock_ledger (created_at, product_id, change, description, trans_id)
-                VALUES (:created_at, :product_id, :change, :description)
+                VALUES (:created_at, :product_id, :change, :description, :trans_id)
             """), {
                 'created_at': datetime.now(),
                 'product_id': new_rental.product_id,
@@ -179,6 +179,17 @@ def return_item(return_rental: ReturnRentalRequest):
         if rental.customer_id != return_rental.customer_id:
             return {"success": False, "message": "Invalid user for indicated rental return. "}
 
+        # Insert transaction into processed table
+        processed_id = connection.execute(sqlalchemy.text("""
+            INSERT INTO processed (created_at, job_id, type)
+            VALUES (:created_at, :job_id, :type)
+            RETURNING id
+        """), {
+            "created_at": datetime.now(),
+            "job_id": return_rental.rental_id,
+            "type": "Rental Return"
+        }).scalar()
+
         # Calculated late fee if applicable
         end_time = rental.end_time
         return_time_dt = return_rental.return_time
@@ -188,17 +199,6 @@ def return_item(return_rental: ReturnRentalRequest):
             late_fee = late_days * DAILY_LATE_FEE
 
             if (late_fee > 0):
-                # Insert transaction into processed table
-                processed_id = connection.execute(sqlalchemy.text("""
-                    INSERT INTO processed (created_at, job_id, type)
-                    VALUES (:created_at, :job_id, :type)
-                    RETURNING id
-                """), {
-                    "created_at": datetime.now(),
-                    "job_id": return_rental.rental_id,
-                    "type": "Rental Late Fee"
-                }).scalar()
-
                 # Insert money change from late fee into money ledger
                 connection.execute(sqlalchemy.text("""
                     INSERT INTO money_ledger (change, description, trans_id)
@@ -217,7 +217,23 @@ def return_item(return_rental: ReturnRentalRequest):
                 SET return_time = :return_time, late_fee = :late_fee
                 WHERE id = :rental_id
             """), {"return_time": return_rental.return_time, "late_fee": late_fee, "rental_id": return_rental.rental_id})
-        
+
+        # Increase stock for product by 1 since now returned.
+        product_id = connection.execute(
+            sqlalchemy.text("""SELECT product_id FROM rentals WHERE id = :id
+            """), {"id": return_rental.rental_id}
+        ).scalar()
+        connection.execute(sqlalchemy.text("""
+                INSERT INTO stock_ledger (created_at, product_id, change, description, trans_id)
+                VALUES (:created_at, :product_id, :change, :description, :trans_id)
+            """), {
+                'created_at': datetime.now(),
+                'product_id': product_id,
+                'change': 1,
+                'description': "Rented item returned.",
+                'trans_id': processed_id
+            })
+
     endTime = time.time()
     print("TIMING:", endTime - startTime) 
     return {"success": True, "message": "Item returned successfully", "late_fee": late_fee}
