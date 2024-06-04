@@ -220,6 +220,7 @@ Add New Rental Request
 ```json
     {
         "rental_id": "integer",
+        "customer_id": "integer",
         "return_time": "datetime"
     }
 ```

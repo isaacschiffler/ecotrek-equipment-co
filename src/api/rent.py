@@ -20,6 +20,7 @@ class NewRentalRequest(BaseModel):
 
 class ReturnRentalRequest(BaseModel):
     rental_id: int
+    customer_id: int
     return_time: datetime
 
 @router.post("/rent")
@@ -113,6 +114,7 @@ def return_item(return_rental: ReturnRentalRequest):
     Request:
     {
         "rental_id": "integer",
+        "customer_id": "integer"
         "return_time": "datetime"
     }
 
@@ -134,7 +136,10 @@ def return_item(return_rental: ReturnRentalRequest):
             return {"success": False, "message": "Rental not found.", "late_fee": 0}
 
         if rental.return_time:
-            return {"success": False, "message": "Item already returned", "late_fee": 0}
+            return {"success": False, "message": "Item already returned.", "late_fee": 0}
+        
+        if rental.customer_id != return_rental.customer_id:
+            return {"success": False, "message": "Invalid user for indicated rental return. "}
 
         # Calculated late fee if applicable
         end_time = rental.end_time
