@@ -209,13 +209,27 @@ def add_review(userId: int, productId: int, rating: int, description: str):
     """
     if rating < 0 or rating > 5:
         return {"success": False, "error": "rating must be between 0 and 5"}
+
     
     with db.engine.begin() as connection:
+        user_exists = connection.execute(
+            sqlalchemy.text("SELECT 1 FROM users WHERE id = :userId"),
+            {'userId': userId}
+        ).scalar()
+
+        product_exists = connection.execute(
+            sqlalchemy.text("SELECT 1 FROM products WHERE id = :productId"),
+            {'productId': productId}
+        ).scalar()
+
+        if not product_exists or not user_exists:
+            return {"success": False, "message": "Invalid product or user passed. "}
+
         connection.execute(sqlalchemy.text("""
                                             INSERT INTO reviews (product_id, customer_id, rating, description)
                                             VALUES (:pid, :uid, :rating, :desc);
                                             """), {'pid': productId, 'uid': userId, 'rating': rating, 'desc': description})
-    
+
     return {"success": True, "error": "none"}
 
 
