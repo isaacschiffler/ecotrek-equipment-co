@@ -78,24 +78,30 @@
 ## 3. User Info Editing-Caused Lost Updates- Two users (User A and User B) are updating the same record almost simultaneously without proper synchronization.
   
   ### Initial State:
-  
-  User profile table with a user record where user_id = 1.
+  - users table:
+  - User ID 1: Email = "user@example.com", Phone Number = "1234567890"
+    
   ### Concurrent Execution:
   
   User A's Request:
-  - Reads the user profile data: user_id = 1.
-  - Updates the email address.
-  - Saves the changes.
+  - Reads the user's email and phone number for User ID 1: Email = "user@example.com", Phone Number = "1234567890"
+  - Update Email Address
+  - Updates the email address to "userA@example.com"
+  - Write Changes to Database
+  - Updates the email address for User ID 1 in the database to "userA@example.com"
+  - Commit Transaction
 
   User B's Request (almost simultaneously):
-  - Reads the user profile data: user_id = 1.
-  - Updates the phone number.
-  - Saves the changes.
-  - 
-  ### Outcome:
-  User A's email update is overwritten by User B's phone number update.
-  Only User B's change is saved, leading to User A's update being lost.
-  
-  ### Solution:
-  Use versioning or timestamps to detect concurrent updates and apply optimistic locking to handle conflicts.
+  - Reads the user's email and phone number for User ID 1: Email = "user@example.com", Phone Number = "1234567890"
+  - Updates the phone number to "0987654321"
+  - Write Changes to Database
+  - Updates the phone number for User ID 1 in the database to "0987654321"
+  - Commit Transaction
 
+  Commits the changes to the database.
+    
+  ### Outcome:
+   Transaction A updates the email address but reads the phone number before Transaction B updates it.
+  Transaction B updates the phone number but reads the email address before Transaction A updates it.
+  The final state of the users table is inconsistent:
+  User ID 1: Email = "user@example.com" (should be "userA@example.com"), Phone Number = "0987654321".
