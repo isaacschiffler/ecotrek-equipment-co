@@ -35,8 +35,9 @@ def rent_item(new_rental: NewRentalRequest):
     }
     Response:
     {   
-        "success": "boolean",
-        "message": "string"
+        "Success": "boolean",
+        "Message": "string",
+        "Money paid": "integer"
     }
     """
     with db.engine.begin() as connection:
@@ -46,7 +47,7 @@ def rent_item(new_rental: NewRentalRequest):
         """), {"customer_id": new_rental.customer_id}).fetchone()
 
         if customer is None:
-            return {"success": False, "message": "Customer does not exist"}
+            return {"success": False, "message": "Customer does not exist", "Money paid": 0}
 
         # Check if the product_id exists
         product = connection.execute(text("""
@@ -54,11 +55,11 @@ def rent_item(new_rental: NewRentalRequest):
         """), {"product_id": new_rental.product_id}).fetchone()
 
         if product is None:
-            return {"success": False, "message": "Product does not exist"}
+            return {"success": False, "message": "Product does not exist", "Money paid": 0}
 
         # Validating end_time is after start_time
         if new_rental.end_time <= new_rental.start_time:
-            return {"success": False, "message": "End time must be after start time"}
+            return {"success": False, "message": "End time must be after start time", "Money paid": 0}
 
 
         # Acceptable request: add rental to rentals
@@ -72,9 +73,25 @@ def rent_item(new_rental: NewRentalRequest):
             'end_time': new_rental.end_time
         })
 
-        # Update money ledger with up-front fees
-    
-    return {"success": True, "message": "Rental request added successfully"}
+        # Calculate up-front fee
+        total_days = (new_rental.end_time - new_rental.start_time).days
+        daily_rental_price = connection.execute(sqlalchemy.text("""
+            SELECT daily_rental_price FROM products WHERE id = :id
+        """), {
+            "id": new_rental.product_id
+        }).scalar()
+        up_front_payment = total_days * daily_rental_price
+
+        # Update money ledger with up front fee
+        connection.execute(text("""
+            INSERT INTO money_ledger (change, description)
+            VALUES (:change, :description)
+        """), {
+            "change": up_front_payment,
+            "description": "rental"
+        })
+
+    return {"success": True, "message": "Rental request added successfully", "Money paid": up_front_payment}
 
 @router.post("/return")
 def return_item(return_rental: ReturnRentalRequest):
@@ -113,6 +130,16 @@ def return_item(return_rental: ReturnRentalRequest):
         if return_time_dt > end_time:
             late_days = (return_time_dt - end_time).days
             late_fee = late_days * DAILY_LATE_FEE
+             
+            # Update money ledger with late fee
+            connection.execute(text("""
+                INSERT INTO money_ledger (change, description)
+                VALUES (:change, :description)
+            """), {
+                "change": late_fee,
+                "description": "Rental late fee"
+            })
+        
         else:
             late_fee = 0
 
@@ -123,6 +150,6 @@ def return_item(return_rental: ReturnRentalRequest):
                 WHERE id = :rental_id
             """), {"return_time": return_rental.return_time, "late_fee": late_fee, "rental_id": return_rental.rental_id})
         
-        # update money ledger with late fee
+        
 
     return {"success": True, "message": "Item returned successfully", "late_fee": late_fee}

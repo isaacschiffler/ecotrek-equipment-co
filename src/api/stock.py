@@ -20,6 +20,18 @@ class Stock(BaseModel):
 
 @router.post("/deliver/{order_id}")
 def post_deliver_stock(stock_plan: list[Stock], order_id: int):
+    """
+    Request:
+    [
+        {
+            "sku": "string",
+            "category_id": 0,
+            "price": 0,
+            "quantity": 0
+        }
+    ]
+
+    """
     total_cost = 0
     with db.engine.begin() as connection:
         try:

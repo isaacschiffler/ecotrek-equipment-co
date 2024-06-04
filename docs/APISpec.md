@@ -191,8 +191,9 @@ Buying items from wholesaler.
 
 ## 5. Renting Items
 ### 5.1 - Rental Request - `/rentals/rent` (POST)
+
 Add New Rental Request
-    ReqAdd New Rental Request
+
 **Request**:
 ```json
     {
@@ -206,7 +207,8 @@ Add New Rental Request
 ```json
     {
         "success": "boolean",
-        "message": "string"
+        "message": "string",
+        "Money paid": "integer"
     }
 ```
 
