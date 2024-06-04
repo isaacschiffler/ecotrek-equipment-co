@@ -4,6 +4,7 @@ import sqlalchemy
 from sqlalchemy import text
 from datetime import datetime, timedelta
 from src import database as db
+import time
 
 router = APIRouter(
     prefix="/rentals",
@@ -46,6 +47,7 @@ def rent_item(new_rental: NewRentalRequest):
         "Money paid": "integer"
     }
     """
+    startTime = time.time()
     with db.engine.begin() as connection:
         # Check if customer exists
         customer = connection.execute(text("""
@@ -110,6 +112,8 @@ def rent_item(new_rental: NewRentalRequest):
                 "trans_id": processed_id
             })
 
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return {"success": True, "message": "Rental request added successfully", "Money paid": up_front_payment}
 
 @router.post("/return")
@@ -134,6 +138,7 @@ def return_item(return_rental: ReturnRentalRequest):
         "late_fee": "float"
     }
     """
+    startTime = time.time()
     with db.engine.begin() as connection:
         rental = connection.execute(
             text("SELECT * FROM rentals WHERE id = :rental_id"),
@@ -189,6 +194,6 @@ def return_item(return_rental: ReturnRentalRequest):
                 WHERE id = :rental_id
             """), {"return_time": return_rental.return_time, "late_fee": late_fee, "rental_id": return_rental.rental_id})
         
-        
-
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return {"success": True, "message": "Item returned successfully", "late_fee": late_fee}
