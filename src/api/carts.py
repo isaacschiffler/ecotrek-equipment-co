@@ -76,7 +76,6 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
         ).scalar()
 
         if not product_exists or not cart_exists:
-            # Product or cart not found, return error
             return {"success": False, "message": "Invalid product or cart id passed. "}
         
         # Check if product already exists in cart
@@ -107,6 +106,7 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
             )
             print("Updated quantity in cart " + str(cart_id) + ". Product id: " + str(product_id))
         else:
+            # Creatiing new cart
             connection.execute(sqlalchemy.text("""INSERT INTO cart_items (cart_id, product_id, quantity, price)
                                            SELECT :cart_id, :product_id, :quantity, products.sale_price
                                            FROM products
@@ -141,6 +141,15 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     """
 
     with db.engine.begin() as connection:
+        # Check if cart exists
+        cart_exists = connection.execute(
+            sqlalchemy.text("SELECT 1 FROM carts WHERE id = :cart_id"),
+            {'cart_id': cart_id}
+        ).scalar()
+
+        if not cart_exists:
+            return {"success": False, "message": "Invalid cart id passed. "}
+
         # insert into processed
         trans_id = connection.execute(sqlalchemy.text("""
             INSERT INTO processed(job_id, type) 
