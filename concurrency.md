@@ -75,7 +75,7 @@
   Use Locks
   Apply FOR UPDATE locks when querying cart items to ensure no other transaction can modify these records until the current transaction is complete.
 
-## 3. User Info Editing-Caused Lost Updates- Two users (User A and User B) are updating the same record almost simultaneously without proper synchronization.
+## 3. User Info Editing-Caused Lost Updates- Two users are updating the same record almost simultaneously without proper synchronization.
   
   ### Initial State:
   - users table:
@@ -85,7 +85,6 @@
   
   User A's Request:
   - Reads the user's email and phone number for User ID 1: Email = "user@example.com", Phone Number = "1234567890"
-  - Update Email Address
   - Updates the email address to "userA@example.com"
   - Write Changes to Database
   - Updates the email address for User ID 1 in the database to "userA@example.com"
