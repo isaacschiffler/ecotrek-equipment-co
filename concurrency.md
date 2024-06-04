@@ -75,4 +75,27 @@
   Use Locks
   Apply FOR UPDATE locks when querying cart items to ensure no other transaction can modify these records until the current transaction is complete.
 
+## 3. User Info Editing-Caused Lost Updates- Two users (User A and User B) are updating the same record almost simultaneously without proper synchronization.
+  
+  ### Initial State:
+  
+  User profile table with a user record where user_id = 1.
+  ### Concurrent Execution:
+  
+  User A's Request:
+  - Reads the user profile data: user_id = 1.
+  - Updates the email address.
+  - Saves the changes.
+
+  User B's Request (almost simultaneously):
+  - Reads the user profile data: user_id = 1.
+  - Updates the phone number.
+  - Saves the changes.
+  - 
+  ### Outcome:
+  User A's email update is overwritten by User B's phone number update.
+  Only User B's change is saved, leading to User A's update being lost.
+  
+  ### Solution:
+  Use versioning or timestamps to detect concurrent updates and apply optimistic locking to handle conflicts.
 
