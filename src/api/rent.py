@@ -31,6 +31,7 @@ def rent_item(new_rental: NewRentalRequest):
     Notes: 
     Same day (start day = end day) rental requests do not have up front fees attached.
     Rental requests exceeding one day will incur a product-specific fee x number of proposed rental days. This is a one time payment, non-refundable.
+    If rental authorized, customer can rent proposed product of quantity one. Should the customer want to rent more, they complete a separate rental request. 
 
     Request:
     {
@@ -48,7 +49,7 @@ def rent_item(new_rental: NewRentalRequest):
     """
     with db.engine.begin() as connection:
         # Check if customer exists
-        customer = connection.execute(text("""
+        customer = connection.execute(sqlalchemy.text("""
             SELECT id FROM users WHERE id = :customer_id
         """), {"customer_id": new_rental.customer_id}).fetchone()
 
@@ -56,7 +57,7 @@ def rent_item(new_rental: NewRentalRequest):
             return {"success": False, "message": "Customer does not exist", "Money paid": 0}
 
         # Check if the product_id exists
-        product = connection.execute(text("""
+        product = connection.execute(sqlalchemy.text("""
             SELECT id FROM products WHERE id = :product_id
         """), {"product_id": new_rental.product_id}).fetchone()
 
@@ -67,19 +68,15 @@ def rent_item(new_rental: NewRentalRequest):
         if new_rental.end_time <= new_rental.start_time:
             return {"success": False, "message": "End time must be after start time", "Money paid": 0}
 
+        # Validating stock to check if quantity of proposed rental item > 0
+        quant = connection.execute(sqlalchemy.text("""
+            SELECT SUM(change) FROM stock_ledger WHERE product_id = :product_id
+        """), {"product_id": new_rental.product_id}).scalar()
 
-        # Acceptable request: add rental to rentals
-        connection.execute(sqlalchemy.text("""
-            INSERT INTO rentals (customer_id, product_id, start_time, end_time)
-            VALUES (:customer_id, :product_id, :start_time, :end_time)
-        """), {
-            'customer_id': new_rental.customer_id,
-            'product_id': new_rental.product_id,
-            'start_time': new_rental.start_time,
-            'end_time': new_rental.end_time
-        })
+        if quant <= 0:
+            return {"success": False, "message": "Product out of stock. "}
 
-        # Calculate up-front fee
+        # Calculated up-front fee
         total_days = (new_rental.end_time - new_rental.start_time).days
         daily_rental_price = connection.execute(sqlalchemy.text("""
             SELECT daily_rental_price FROM products WHERE id = :id
@@ -90,7 +87,7 @@ def rent_item(new_rental: NewRentalRequest):
 
         if (up_front_payment > 0):
             # Insert into processed table
-            processed_id = connection.execute(text("""
+            processed_id = connection.execute(sqlalchemy.text("""
                 INSERT INTO processed (created_at, job_id, type)
                 VALUES (:created_at, :job_id, :type)
                 RETURNING id
@@ -101,7 +98,7 @@ def rent_item(new_rental: NewRentalRequest):
             }).scalar()
 
             # Update money ledger with up-front fee and foreign key reference to processed table
-            connection.execute(text("""
+            connection.execute(sqlalchemy.text("""
                 INSERT INTO money_ledger (change, description, trans_id)
                 VALUES (:change, :description, :trans_id)
             """), {
@@ -109,6 +106,33 @@ def rent_item(new_rental: NewRentalRequest):
                 "description": "rental",
                 "trans_id": processed_id
             })
+
+             # Acceptable request: add rental to rentals
+            connection.execute(sqlalchemy.text("""
+                INSERT INTO rentals (customer_id, product_id, start_time, end_time)
+                VALUES (:customer_id, :product_id, :start_time, :end_time)
+            """), {
+                'customer_id': new_rental.customer_id,
+                'product_id': new_rental.product_id,
+                'start_time': new_rental.start_time,
+                'end_time': new_rental.end_time
+            })
+
+            # Update stock ledgers with temporary dip in product quantity
+            connection.execute(sqlalchemy.text("""
+                INSERT INTO stock_ledger (created_at, product_id, change, description, trans_id)
+                VALUES (:created_at, :product_id, :change, :description)
+            """), {
+                'created_at': datetime.now(),
+                'product_id': new_rental.product_id,
+                'change': -1,
+                'description': "Product temporarily being rented.",
+                'trans_id': processed_id
+            })
+
+        else:
+            # < 24 hours proposed, throw error
+            return {"success": False, "message": "Rental periods must exceed 24 hours. "}
 
     return {"success": True, "message": "Rental request added successfully", "Money paid": up_front_payment}
 
@@ -136,7 +160,7 @@ def return_item(return_rental: ReturnRentalRequest):
     """
     with db.engine.begin() as connection:
         rental = connection.execute(
-            text("SELECT * FROM rentals WHERE id = :rental_id"),
+            sqlalchemy.text("SELECT * FROM rentals WHERE id = :rental_id"),
             {"rental_id": return_rental.rental_id}
         ).fetchone()
 
@@ -160,7 +184,7 @@ def return_item(return_rental: ReturnRentalRequest):
 
             if (late_fee > 0):
                 # Insert transaction into processed table
-                processed_id = connection.execute(text("""
+                processed_id = connection.execute(sqlalchemy.text("""
                     INSERT INTO processed (created_at, job_id, type)
                     VALUES (:created_at, :job_id, :type)
                     RETURNING id
@@ -171,7 +195,7 @@ def return_item(return_rental: ReturnRentalRequest):
                 }).scalar()
 
                 # Insert money change from late fee into money ledger
-                connection.execute(text("""
+                connection.execute(sqlalchemy.text("""
                     INSERT INTO money_ledger (change, description, trans_id)
                     VALUES (:change, :description, :trans_id)
                 """), {
@@ -183,7 +207,7 @@ def return_item(return_rental: ReturnRentalRequest):
             late_fee = 0
 
         connection.execute(
-            text("""
+            sqlalchemy.text("""
                 UPDATE rentals 
                 SET return_time = :return_time, late_fee = :late_fee
                 WHERE id = :rental_id

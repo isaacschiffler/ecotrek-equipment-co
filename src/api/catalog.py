@@ -207,11 +207,11 @@ def add_review(userId: int, productId: int, rating: int, description: str):
         "error": "string"
         }
     """
-    if rating < 0 or rating > 5:
-        return {"success": False, "error": "rating must be between 0 and 5"}
-
     
     with db.engine.begin() as connection:
+        if rating < 0 or rating > 5:
+            return {"success": False, "error": "rating must be between 0 and 5"}
+
         user_exists = connection.execute(
             sqlalchemy.text("SELECT 1 FROM users WHERE id = :userId"),
             {'userId': userId}
