@@ -27,6 +27,11 @@ class ReturnRentalRequest(BaseModel):
 def rent_item(new_rental: NewRentalRequest):
     """
     Add New Rental Request
+
+    Notes: 
+    Same day (start day = end day) rental requests do not have up front fees attached.
+    Rental requests exceeding one day will incur a product-specific fee x number of proposed rental days. This is a one time payment, non-refundable.
+
     Request:
     {
         "customer_id": "integer",
@@ -83,26 +88,27 @@ def rent_item(new_rental: NewRentalRequest):
         }).scalar()
         up_front_payment = total_days * daily_rental_price
 
-        # Insert into processed table
-        processed_id = connection.execute(text("""
-            INSERT INTO processed (created_at, job_id, type)
-            VALUES (:created_at, :job_id, :type)
-            RETURNING id
-        """), {
-            "created_at": datetime.now(),
-            "job_id": new_rental.customer_id,
-            "type": "rental"
-        }).scalar()
+        if (up_front_payment > 0):
+            # Insert into processed table
+            processed_id = connection.execute(text("""
+                INSERT INTO processed (created_at, job_id, type)
+                VALUES (:created_at, :job_id, :type)
+                RETURNING id
+            """), {
+                "created_at": datetime.now(),
+                "job_id": new_rental.customer_id,
+                "type": "rental"
+            }).scalar()
 
-        # Update money ledger with up front fee and foreign key reference to processed table
-        connection.execute(text("""
-            INSERT INTO money_ledger (change, description, trans_id)
-            VALUES (:change, :description, :trans_id)
-        """), {
-            "change": up_front_payment,
-            "description": "rental",
-            "trans_id": processed_id
-        })
+            # Update money ledger with up-front fee and foreign key reference to processed table
+            connection.execute(text("""
+                INSERT INTO money_ledger (change, description, trans_id)
+                VALUES (:change, :description, :trans_id)
+            """), {
+                "change": up_front_payment,
+                "description": "rental",
+                "trans_id": processed_id
+            })
 
     return {"success": True, "message": "Rental request added successfully", "Money paid": up_front_payment}
 
@@ -110,6 +116,9 @@ def rent_item(new_rental: NewRentalRequest):
 def return_item(return_rental: ReturnRentalRequest):
     """
     Return Rental Item
+
+    Notes: 
+    All rentals returned after proposed end_date will be subject to a constant daily late fee ($20/day) following 24 hours of the due date (original end time).
 
     Request:
     {
@@ -144,31 +153,32 @@ def return_item(return_rental: ReturnRentalRequest):
         # Calculated late fee if applicable
         end_time = rental.end_time
         return_time_dt = return_rental.return_time
+        
         if return_time_dt > end_time:
             late_days = (return_time_dt - end_time).days
             late_fee = late_days * DAILY_LATE_FEE
-             
-            # Insert transaction into processed table
-            processed_id = connection.execute(text("""
-                INSERT INTO processed (created_at, job_id, type)
-                VALUES (:created_at, :job_id, :type)
-                RETURNING id
-            """), {
-                "created_at": datetime.now(),
-                "job_id": return_rental.rental_id,
-                "type": "Rental Late Fee"
-            }).scalar()
 
-            # Update money ledger with late fee and foreign key reference to processed table
-            connection.execute(text("""
-                INSERT INTO money_ledger (change, description, trans_id)
-                VALUES (:change, :description, :trans_id)
-            """), {
-                "change": late_fee,
-                "description": "Rental Late Fee",
-                "trans_id": processed_id
-            })
-        
+            if (late_fee > 0):
+                # Insert transaction into processed table
+                processed_id = connection.execute(text("""
+                    INSERT INTO processed (created_at, job_id, type)
+                    VALUES (:created_at, :job_id, :type)
+                    RETURNING id
+                """), {
+                    "created_at": datetime.now(),
+                    "job_id": return_rental.rental_id,
+                    "type": "Rental Late Fee"
+                }).scalar()
+
+                # Insert money change from late fee into money ledger
+                connection.execute(text("""
+                    INSERT INTO money_ledger (change, description, trans_id)
+                    VALUES (:change, :description, :trans_id)
+                """), {
+                    "change": late_fee,
+                    "description": "Rental Late Fee",
+                    "trans_id": processed_id
+                })
         else:
             late_fee = 0
 
