@@ -82,13 +82,25 @@ def rent_item(new_rental: NewRentalRequest):
         }).scalar()
         up_front_payment = total_days * daily_rental_price
 
-        # Update money ledger with up front fee
+        # Insert into processed table
+        processed_id = connection.execute(text("""
+            INSERT INTO processed (created_at, job_id, type)
+            VALUES (:created_at, :job_id, :type)
+            RETURNING id
+        """), {
+            "created_at": datetime.now(),
+            "job_id": new_rental.customer_id,
+            "type": "rental"
+        }).scalar()
+
+        # Update money ledger with up front fee and foreign key reference to processed table
         connection.execute(text("""
-            INSERT INTO money_ledger (change, description)
-            VALUES (:change, :description)
+            INSERT INTO money_ledger (change, description, trans_id)
+            VALUES (:change, :description, :trans_id)
         """), {
             "change": up_front_payment,
-            "description": "rental"
+            "description": "rental",
+            "trans_id": processed_id
         })
 
     return {"success": True, "message": "Rental request added successfully", "Money paid": up_front_payment}
@@ -131,13 +143,25 @@ def return_item(return_rental: ReturnRentalRequest):
             late_days = (return_time_dt - end_time).days
             late_fee = late_days * DAILY_LATE_FEE
              
-            # Update money ledger with late fee
+            # Insert transaction into processed table
+            processed_id = connection.execute(text("""
+                INSERT INTO processed (created_at, job_id, type)
+                VALUES (:created_at, :job_id, :type)
+                RETURNING id
+            """), {
+                "created_at": datetime.now(),
+                "job_id": return_rental.rental_id,
+                "type": "Rental Late Fee"
+            }).scalar()
+
+            # Update money ledger with late fee and foreign key reference to processed table
             connection.execute(text("""
-                INSERT INTO money_ledger (change, description)
-                VALUES (:change, :description)
+                INSERT INTO money_ledger (change, description, trans_id)
+                VALUES (:change, :description, :trans_id)
             """), {
                 "change": late_fee,
-                "description": "Rental late fee"
+                "description": "Rental Late Fee",
+                "trans_id": processed_id
             })
         
         else:
