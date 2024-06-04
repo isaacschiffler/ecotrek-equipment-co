@@ -6,7 +6,7 @@ import sqlalchemy
 from src import database as db
 from datetime import datetime
 from math import ceil
-
+import time
 
 router = APIRouter(
     prefix="/carts",
@@ -21,6 +21,7 @@ def create_cart(userID: int):
     RES:
     { "cartID": "integer" }
     """
+    startTime = time.time()
     with db.engine.begin() as connection:
         user_exists = connection.execute(
             sqlalchemy.text("SELECT COUNT(id) FROM users WHERE id = :user_id"),
@@ -40,7 +41,8 @@ def create_cart(userID: int):
 
     print("creating cart for user {} with id {}".format(userID, cart_id))
 
-
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return {"cartID": cart_id}
     
 
@@ -62,6 +64,7 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
     }
 
     """
+    startTime = time.time()
     with db.engine.begin() as connection:
         # Check if product exists
         product_exists = connection.execute(
@@ -120,6 +123,8 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
         
             print("new entry in cart " + str(cart_id) + ". Product id: " + str(product_id))
 
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return {"success": True, "message": "OK"}
 
 
@@ -139,7 +144,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     "money_paid": "integer"
     }
     """
-
+    startTime = time.time()
     with db.engine.begin() as connection:
         # Check if cart exists
         cart_exists = connection.execute(
@@ -197,4 +202,6 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         
     print("stock bought: " + str(quant_bought) + " money paid: " + str(income))
 
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return {"num_items_bought": quant_bought, "money_paid": income}

@@ -5,6 +5,7 @@ import sqlalchemy
 from sqlalchemy.sql import func
 from sqlalchemy import text
 from src import database as db
+import time
 
 
 router = APIRouter(
@@ -32,6 +33,7 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
     ]
 
     """
+    startTime = time.time()
     total_cost = 0
     with db.engine.begin() as connection:
         try:
@@ -95,8 +97,9 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
             return "OK"
         except Exception as e:
             print("An error occurred: {}".format(e))
-            
-            return("An error occured. ")
+    endTime = time.time()
+    print("TIMING:", endTime - startTime)        
+    return("An error occured. ")
             
 
 @router.post("/plan")
@@ -120,6 +123,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
         }
     ]
     """
+    startTime = time.time()
     with db.engine.begin() as connection:
         total_money = connection.execute(sqlalchemy.text("SELECT SUM(change) AS money FROM money_ledger")).fetchone()[0]
         if total_money is None:
@@ -146,7 +150,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Stock]):
 
     print("Stock plan: {}".format(stock_plan))
 
-
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return stock_plan
                 
 

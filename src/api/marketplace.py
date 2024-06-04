@@ -4,7 +4,7 @@ import sqlalchemy
 from sqlalchemy.sql import func
 from sqlalchemy import text
 from src import database as db
-
+import time
 
 router = APIRouter(
     prefix="/marketplace",
@@ -35,7 +35,7 @@ def marketplace_sell(listingID: int, quantity: int):
         "money_paid": "integer"
     }
     """
-
+    startTime = time.time()
     with db.engine.begin() as connection:
         # update quantity level of item; as of now, money handling is done between users, so our money ledger does not change
         connection.execute(sqlalchemy.text("""UPDATE marketplace 
@@ -54,6 +54,8 @@ def marketplace_sell(listingID: int, quantity: int):
     
     money_paid = price * quantity
     
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return {"item_sold": name,
             "quantity": quantity,
             "money_paid": money_paid
@@ -79,6 +81,7 @@ def marketplace_list(newListing: newProduct):
         "listingID": "integer"
     }
     """
+    startTime = time.time()
     with db.engine.begin() as connection:
         listingID = connection.execute(sqlalchemy.text("""INSERT INTO marketplace
                                                     (product_name, quantity, price, condition, description) VALUES
@@ -92,6 +95,8 @@ def marketplace_list(newListing: newProduct):
                                                         'description': newListing.description
                                                     }]).fetchone()[0]
 
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
     return  {"listingID": listingID}
     
                 

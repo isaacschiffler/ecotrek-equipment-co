@@ -7,6 +7,7 @@ from sqlalchemy import text
 from src import database as db
 from enum import Enum
 from typing import List
+import time
 
 router = APIRouter(
     prefix="/users",
@@ -46,7 +47,7 @@ def user_register(newUser: User):
         }
 
     """
-
+    startTime = time.time()
     with db.engine.begin() as connection:
         # converting enum to str when add to table
         preferred_activities_str = ','.join(activity.value for activity in newUser.preferred_activities)
@@ -76,5 +77,7 @@ def user_register(newUser: User):
             success = True
         else:
             success = False
-
-        return {"userID": userID, "success": success}
+    
+    endTime = time.time()
+    print("TIMING:", endTime - startTime) 
+    return {"userID": userID, "success": success}

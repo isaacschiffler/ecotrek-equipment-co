@@ -3,6 +3,7 @@ from src import database as db
 from fastapi import APIRouter
 from sqlalchemy.sql import select, func, case
 from datetime import date
+import time
 
 
 router = APIRouter(
@@ -13,6 +14,7 @@ router = APIRouter(
 
 @router.get("/")
 def get_catalog():
+    startTime = time.time()
     catalog = []
     with db.engine.begin() as connection:
         stock = connection.execute(sqlalchemy.text("""SELECT products.id, products.name, products.description, SUM(change) AS quantity, products.sale_price, products.daily_rental_price, categories.type
@@ -56,7 +58,8 @@ def get_catalog():
                         "description": item.description
                     }
                 )
-                
+    endTime = time.time()
+    print("TIMING:", endTime - startTime)
     return catalog
 
 
@@ -78,6 +81,7 @@ def get_recs(userId: int):
             "description": "string"
         }]
     """
+    startTime = time.time()
     cat = []
     categories = {}
     money_spends = {}
@@ -186,7 +190,8 @@ def get_recs(userId: int):
                 }
             )
 
-            
+    endTime = time.time()
+    print("TIMING:", endTime - startTime)
 
     return cat
 
@@ -207,8 +212,10 @@ def add_review(userId: int, productId: int, rating: int, description: str):
         "error": "string"
         }
     """
+    startTime = time.time()
     
     with db.engine.begin() as connection:
+
         if rating < 0 or rating > 5:
             return {"success": False, "error": "rating must be between 0 and 5"}
 
@@ -229,7 +236,8 @@ def add_review(userId: int, productId: int, rating: int, description: str):
                                             INSERT INTO reviews (product_id, customer_id, rating, description)
                                             VALUES (:pid, :uid, :rating, :desc);
                                             """), {'pid': productId, 'uid': userId, 'rating': rating, 'desc': description})
-
+    endTime = time.time()
+    print("TIMING:", endTime - startTime)
     return {"success": True, "error": "none"}
 
 
@@ -252,6 +260,7 @@ def search_reviews(productId: int, displayLimit: int = 10, keywords : str = "", 
             "description": "string"
         }]
     """
+    startTime = time.time()
     with db.engine.begin() as connection:
         stmt = (
             sqlalchemy.select(
@@ -281,5 +290,6 @@ def search_reviews(productId: int, displayLimit: int = 10, keywords : str = "", 
                     "description": item.description
                 }
             )
-
-        return retVal
+    endTime = time.time()
+    print("TIMING:", endTime - startTime)
+    return retVal
