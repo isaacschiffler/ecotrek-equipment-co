@@ -262,6 +262,14 @@ def search_reviews(productId: int, displayLimit: int = 10, keywords : str = "", 
     """
     startTime = time.time()
     with db.engine.begin() as connection:
+        product_exists = connection.execute(
+            sqlalchemy.text("SELECT 1 FROM products WHERE id = :product_id"),
+            {'product_id': productId}
+        ).scalar()
+
+        if not product_exists:
+            return {"success": False, "message": "product Does not exist."}
+
         stmt = (
             sqlalchemy.select(
                 db.products.c.name,

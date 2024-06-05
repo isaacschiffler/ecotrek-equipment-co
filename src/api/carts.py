@@ -109,7 +109,7 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
             )
             print("Updated quantity in cart " + str(cart_id) + ". Product id: " + str(product_id))
         else:
-            # Creatiing new cart
+            # Creating new cart
             connection.execute(sqlalchemy.text("""INSERT INTO cart_items (cart_id, product_id, quantity, price)
                                            SELECT :cart_id, :product_id, :quantity, products.sale_price
                                            FROM products
