@@ -145,13 +145,27 @@ def checkout(cart_id: int):
     startTime = time.time()
     with db.engine.begin() as connection:
         # Check if cart exists
-        cart_exists = connection.execute(
-            sqlalchemy.text("SELECT 1 FROM carts WHERE id = :cart_id"),
+        cart_checked_out = connection.execute(
+            sqlalchemy.text("SELECT checked_out FROM carts WHERE id = :cart_id"),
             {'cart_id': cart_id}
-        ).scalar()
+        ).fetchone()
 
-        if not cart_exists:
+        if cart_checked_out == None:
             return {"success": False, "message": "Invalid cart id passed. "}
+
+        if cart_checked_out[0] == True:
+            return {
+                "success": False,
+                "message": "Cart already checked out"
+            }
+        
+        # set checked out to true
+        connection.execute(sqlalchemy.text("""UPDATE carts SET checked_out = TRUE
+                                           WHERE id = :cart_id"""),
+                                           [{
+                                               'cart_id': cart_id
+                                           }])
+
 
         # insert into processed
         trans_id = connection.execute(sqlalchemy.text("""
