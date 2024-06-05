@@ -128,11 +128,9 @@ def set_item_quantity(cart_id: int, product_id: int, cart_item: CartItem):
     return {"success": True, "message": "OK"}
 
 
-class CartCheckout(BaseModel):
-    payment: str
 
 @router.post("/{cart_id}/checkout")
-def checkout(cart_id: int, cart_checkout: CartCheckout):
+def checkout(cart_id: int):
     """Subtract item quantity and add money
     REQ
     {
