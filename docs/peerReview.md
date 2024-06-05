@@ -20,6 +20,9 @@
 - Changed router.post to ("/user/") from "/user/{userID}"
 - Added comments and docstrings with Requests and Response Headers
 - Added new carts table column (checked_out) that is automatically set to False - gets set to True if hits /checkout
+- Added error handling in carts checkout to check if cart exists.
+- Added error handling in carts set item quantity -checking if product and cart exists, and checking if product's already in cart (just update quantity) or not (add new row)
+- Added error handlings in create cart that validates appropriate user.
 
 
 # API related feedback
