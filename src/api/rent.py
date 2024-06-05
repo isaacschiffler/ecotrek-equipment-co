@@ -44,7 +44,7 @@ def rent_item(new_rental: NewRentalRequest):
     Response:
     {   
         "Success": "boolean",
-        "Rental id: "integer",
+        "Rental id": "integer",
         "Message": "string",
         "Money paid": "integer"
     }
@@ -112,8 +112,10 @@ def rent_item(new_rental: NewRentalRequest):
 
              # Acceptable request: add rental to rentals
             rental_id = connection.execute(sqlalchemy.text("""
+               
                 INSERT INTO rentals (customer_id, product_id, start_time, end_time)
                 VALUES (:customer_id, :product_id, :start_time, :end_time)
+                RETURNING id
             """), {
                 'customer_id': new_rental.customer_id,
                 'product_id': new_rental.product_id,

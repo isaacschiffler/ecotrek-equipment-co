@@ -208,6 +208,7 @@ Add New Rental Request
 ```json
     {
         "success": "boolean",
+        "Rental id": "integer",
         "message": "string",
         "Money paid": "integer"
     }
