@@ -82,8 +82,10 @@ create table
     price integer null,
     condition text null,
     description text null,
-    constraint marketplace_pkey primary key (id)
-) tablespace pg_default;
+    user_id integer null,
+    constraint marketplace_pkey primary key (id),
+    constraint marketplace_user_id_fkey foreign key (user_id) references users (id)
+  ) tablespace pg_default;
 
 create table
   public.reviews (

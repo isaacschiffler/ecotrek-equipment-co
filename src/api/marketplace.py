@@ -13,7 +13,8 @@ router = APIRouter(
 
 class newProduct(BaseModel):
     productName: str
-    quantity:int
+    user_id: int
+    quantity: int
     price: int
     condition: str
     description: str
@@ -70,6 +71,7 @@ def marketplace_list(newListing: newProduct):
     Request:
     {
         "productName": "string",
+        "user_id": "integer",
         "quantity": "integer",
         "price": "integer",
         "condition": "string",
@@ -83,17 +85,21 @@ def marketplace_list(newListing: newProduct):
     """
     startTime = time.time()
     with db.engine.begin() as connection:
-        listingID = connection.execute(sqlalchemy.text("""INSERT INTO marketplace
-                                                    (product_name, quantity, price, condition, description) VALUES
-                                                    (:productName, :quantity, :price, :condition, :description)
-                                                    RETURNING id"""),
-                                                    [{
-                                                        'productName': newListing.productName,
-                                                        'quantity': newListing.quantity,
-                                                        'price': newListing.price,
-                                                        'condition': newListing.condition,
-                                                        'description': newListing.description
-                                                    }]).fetchone()[0]
+        try:
+            listingID = connection.execute(sqlalchemy.text("""INSERT INTO marketplace
+                                                        (product_name, quantity, price, condition, description, user_id) VALUES
+                                                        (:productName, :quantity, :price, :condition, :description, :user_id)
+                                                        RETURNING id"""),
+                                                        [{
+                                                            'productName': newListing.productName,
+                                                            'quantity': newListing.quantity,
+                                                            'price': newListing.price,
+                                                            'condition': newListing.condition,
+                                                            'description': newListing.description,
+                                                            'user_id': newListing.user_id
+                                                        }]).fetchone()[0]
+        except:
+            return {"success": False, "message": "Invalid User ID"}
 
     endTime = time.time()
     print("TIMING:", endTime - startTime) 

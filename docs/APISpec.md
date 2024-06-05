@@ -98,6 +98,7 @@ The API calls are made in this sequence when making a purchase:
 ```json
 {
   "productName": "string",
+  "user_id": "integer",
   "quantity": "integer",
   "price": "integer",
   "condition": "string",
