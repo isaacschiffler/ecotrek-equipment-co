@@ -287,6 +287,9 @@ def search_reviews(productId: int, displayLimit: int = 10, keywords : str = "", 
         if rating != -1:
             stmt = stmt.where(db.reviews.c.rating == rating)
         
+        if productId != -1:
+            stmt = stmt.where(db.reviews.c.product_id == productId)
+        
         result = connection.execute(stmt).fetchall()
         retVal = []
 
