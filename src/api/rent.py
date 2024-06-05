@@ -43,6 +43,7 @@ def rent_item(new_rental: NewRentalRequest):
     Response:
     {   
         "Success": "boolean",
+        "Rental id: "integer",
         "Message": "string",
         "Money paid": "integer"
     }
@@ -71,15 +72,15 @@ def rent_item(new_rental: NewRentalRequest):
 
 
         # Acceptable request: add rental to rentals
-        connection.execute(sqlalchemy.text("""
+        rental_id = connection.execute(sqlalchemy.text("""
             INSERT INTO rentals (customer_id, product_id, start_time, end_time)
-            VALUES (:customer_id, :product_id, :start_time, :end_time)
+            VALUES (:customer_id, :product_id, :start_time, :end_time) RETURNING id
         """), {
             'customer_id': new_rental.customer_id,
             'product_id': new_rental.product_id,
             'start_time': new_rental.start_time,
             'end_time': new_rental.end_time
-        })
+        }).scalar()
 
         # Calculate up-front fee
         total_days = (new_rental.end_time - new_rental.start_time).days
@@ -114,7 +115,7 @@ def rent_item(new_rental: NewRentalRequest):
 
     endTime = time.time()
     print("TIMING:", endTime - startTime) 
-    return {"success": True, "message": "Rental request added successfully", "Money paid": up_front_payment}
+    return {"success": True, "Rental id": rental_id, "message": "Rental request added successfully", "Money paid": up_front_payment}
 
 @router.post("/return")
 def return_item(return_rental: ReturnRentalRequest):

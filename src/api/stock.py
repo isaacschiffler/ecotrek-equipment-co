@@ -93,12 +93,12 @@ def post_deliver_stock(stock_plan: list[Stock], order_id: int):
             """), {'cost': -total_cost})
 
             print("Delivered these products: {}".format(stock_plan))
-
+            endTime = time.time()
+            print("TIMING:", endTime - startTime)  
             return "OK"
         except Exception as e:
             print("An error occurred: {}".format(e))
-    endTime = time.time()
-    print("TIMING:", endTime - startTime)        
+          
     return("An error occured. ")
             
 
