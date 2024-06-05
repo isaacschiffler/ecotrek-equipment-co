@@ -13,11 +13,15 @@ CREATE TABLE processed (
     type text null
 );
 
-CREATE TABLE carts (
-    id SERIAL PRIMARY KEY,
-    user_id INT4 REFERENCES users(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+create table
+  public.carts (
+    id serial,
+    user_id integer null,
+    created_at timestamp without time zone null default current_timestamp,
+    checked_out boolean null default false,
+    constraint carts_pkey primary key (id),
+    constraint carts_user_id_fkey foreign key (user_id) references users (id)
+  ) tablespace pg_default;
 
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
